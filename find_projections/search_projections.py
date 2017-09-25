@@ -116,11 +116,11 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
      :param outputs: 1-d numpy array of floats (dense)
      """
      def set_training_data(self, inputs, outputs):
-         self.ds = Datset(inputs)
+         self.ds = Datset(inputs.astype("float"))
          if self.is_classifier is True:
-           self.ds.setOutputForClassification(outputs)
+           self.ds.setOutputForClassification(outputs.astype("float"))
          else:
-           self.ds.setOutputForRegression(outputs)
+           self.ds.setOutputForRegression(outputs.astype("float"))
 
      """
      Returns all the search parameters in Params object

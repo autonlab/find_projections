@@ -3,7 +3,7 @@ from distutils.core import Extension
 import os, sys
 
 import pip
-pip.main(['install', '--user', 'numpy'])
+pip.main(['install', 'numpy'])
 
 home_folder = os.path.expanduser("~")
 user_site_packages_folder = "{0}/.local/lib/python{1}.{2}/site-packages".format(home_folder, sys.version_info[0], sys.version_info[1])

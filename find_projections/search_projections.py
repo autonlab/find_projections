@@ -161,7 +161,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
          if fmap is None:
              return None
 
-         testds = Datset(inputs)
+         testds = Datset(np.ascontiguousarray(inputs, dtype=float))
          rows = testds.get_size()
          predictedTargets = numpy.zeros(rows)
 

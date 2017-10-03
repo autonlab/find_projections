@@ -54,15 +54,15 @@ static bool is_power_of_two(int n) {
   return !(n & (n-1));
 }
 
-static double compute_mean(Datset &ds, std::vector<int> &train_rows) {
+static double compute_mean(Datset &ds, std::vector<int> &train_rows, std::vector<int> &indices) {
   double truemean = 0.0;
-  for(unsigned int i=0; i<train_rows.size(); i++) {
-    int row = train_rows[i];
+  for(unsigned int i=0; i<indices.size(); i++) {
+    int row = train_rows[indices[i]];
     double value = ds.ds_output_ref(row);
     truemean += value;
   }
-  truemean /= train_rows.size();
- 
+  truemean /= indices.size();
+							 
   return truemean;
 }
 
@@ -267,10 +267,10 @@ static std::vector<projection *> evaluate_attribute_pair(std::vector<int> &ivatt
       bool match_box = total >= support;
       bool mean_proper = true;
 
-      // if(tree_mode == 1)
-      //   mean_proper = nbt->get_mean() > purity_threshold;
-      // else if(tree_mode == 2)
-      //   mean_proper = nbt->get_mean() < purity_threshold;
+      if(tree_mode == 1)
+        mean_proper = nbt->get_mean() > purity_threshold;
+      else if(tree_mode == 2)
+        mean_proper = nbt->get_mean() < purity_threshold;
 
       /* Box found meeting selection criteria */
       if(match_box && mean_proper) 
@@ -315,7 +315,7 @@ void *thread_routine (void *arg) {
   feature_tree *ftree = ts->ftree;
 
   if(ds->is_classification() == false)
-    purity = compute_mean(*ds, train_rows);
+    purity = compute_mean(*ds, train_rows, ia->get_indices(0));
 
   /* Loop through all pairs of attributes */
   for(j=atts-1; j>0; j--) {
@@ -364,9 +364,6 @@ static feature_tree *create_feature_tree(Datset &ds, indices_array &ia, std::vec
     int f2att = i; /* X-axis */
     std::vector<int> &ivatt2 = ia.get_indices(f2att);
 
-    // for(int mn=0; mn<ivatt2.size(); mn++)
-    //   printf("%d(%f) ", ivatt2[mn], ds.ds_real_ref(ivatt2[mn], i));
-    // printf("\n\n\n");
     /* Construct binary tree for 'f2att' dimension */
     btree_node *node = btree_node::construct_empty_tree(ds, i, is_classifier, train_rows, ivatt2, bin_size, leaves);
     ftree->setTree(i, node);
@@ -442,7 +439,7 @@ feature_map *search_for_max_subrectangles(Datset &ds, feature_tree *ftree, std::
   feature_map *table = new feature_map(atts);
 
   if(ds.is_classification() == false)
-    purity_threshold = compute_mean(ds, train_rows);
+    purity_threshold = compute_mean(ds, train_rows, ia.get_indices(0));
 
   /* Loop through all pairs of attributes */
   for(int i=0; i<atts-1; i++) {
@@ -615,7 +612,7 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
         dp = new numeric_projection();
         numeric_projection *np = (numeric_projection *)pr;
         double r2 = np->compute_R2(ds, *train_rows);
-        printf("R2 = %f\n", r2);
+        //printf("R2 = %f\n", r2);
       }
       else
         dp = new discrete_projection();

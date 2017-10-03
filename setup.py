@@ -32,5 +32,10 @@ setup(
         author_email = 'sray@cs.cmu.edu',
         description = 'Search for 2-d projection boxes separating out classes/quantiles of output',
         ext_modules = [ find_projections_module ],
-        packages = ['find_projections']
+        packages = ['find_projections'],
+		entry_points = {
+			'd3m.primitives': [
+			    'cmu.autonlab.find_projections = find_projections'
+			]
+		}
 )

@@ -267,10 +267,10 @@ static std::vector<projection *> evaluate_attribute_pair(std::vector<int> &ivatt
       bool match_box = total >= support;
       bool mean_proper = true;
 
-      if(tree_mode == 1)
-        mean_proper = nbt->get_mean() > purity_threshold;
-      else if(tree_mode == 2)
-        mean_proper = nbt->get_mean() < purity_threshold;
+      // if(tree_mode == 1)
+      //   mean_proper = nbt->get_mean() > purity_threshold;
+      // else if(tree_mode == 2)
+      //   mean_proper = nbt->get_mean() < purity_threshold;
 
       /* Box found meeting selection criteria */
       if(match_box && mean_proper) 
@@ -364,6 +364,9 @@ static feature_tree *create_feature_tree(Datset &ds, indices_array &ia, std::vec
     int f2att = i; /* X-axis */
     std::vector<int> &ivatt2 = ia.get_indices(f2att);
 
+    // for(int mn=0; mn<ivatt2.size(); mn++)
+    //   printf("%d(%f) ", ivatt2[mn], ds.ds_real_ref(ivatt2[mn], i));
+    // printf("\n\n\n");
     /* Construct binary tree for 'f2att' dimension */
     btree_node *node = btree_node::construct_empty_tree(ds, i, is_classifier, train_rows, ivatt2, bin_size, leaves);
     ftree->setTree(i, node);

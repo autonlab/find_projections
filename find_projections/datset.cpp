@@ -18,9 +18,12 @@ Datset::Datset(PyObject *object) {
 
   darray = new matrix<double>(rows, cols);
   
+  printf("rows = %d, cols = %d\n", rows, cols);
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
       double val = iter[i*cols + j];
+      if(i == 169 && j == 0)
+        printf("row %d val %f\n", i, val);
       (*darray)(i, j) = val;
     }
   }

@@ -55,6 +55,10 @@ indices_array *Helper::mk_indices_array_sorted_values(Datset &ds, std::vector<in
       d[k] = value;
     }
     std::vector<int> *iv = sort_indexes(d);
+
+    printf("Att %d index %d val %f\n", i, iv->at(0), ds.ds_real_ref(iv->at(0), i));
+    // for(int mn=0; mn<iv->size(); mn++)
+    //   printf("%d(%f) ", iv->at(mn), ds.ds_real_ref(iv->at(mn), i));
     ia->set_indices(i, iv);
   }
 

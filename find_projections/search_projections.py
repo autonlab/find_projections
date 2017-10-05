@@ -158,7 +158,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
      Returns predictions made on test data from prior saved list of projections.
      """
      def produce(self, inputs):
-         if fmap is None:
+         if self.fmap is None:
              return None
 
          testds = Datset(np.ascontiguousarray(inputs, dtype=float))
@@ -171,7 +171,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
              # Loop through all the projections in order of attributes
              predicted = false
              for i in range(num):
-                 pr = fmap.get_projection(i)
+                 pr = self.fmap.get_projection(i)
                  if pr.point_lies_in_projection(testDs, j) is true:
                      predictedTargets[j] = pr.get_projection_metric()
                      predicted = true

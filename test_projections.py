@@ -29,7 +29,8 @@ for i in range(num):
 # Search for easy-to-classify data (decision list)
 search_object.fit()
 
-search_object.produce(result)
+predicted = search_object.produce(result)
+print(predicted)
 
 num = fmap.get_num_projections()
 # Loop through all the projections in order of attributes

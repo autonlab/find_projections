@@ -173,13 +173,14 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
              predicted = False
              for i in range(num):
                  pr = self.fmap.get_projection(i)
-                 if pr.point_lies_in_projection(testds, j) is true:
+                 if pr.point_lies_in_projection(testds.ds, j) is True:
                      predictedTargets[j] = pr.get_projection_metric()
                      predicted = True
                      break
 
-                     # Predict using outside blackbox classifier
-                     predictedTargets[j] = -1 #clf.predict(testData[j,:])
+             # Predict using outside blackbox classifier
+             if predicted is False:
+               predictedTargets[j] = -1 #clf.predict(testData[j,:])
 
          return predictedTargets
 

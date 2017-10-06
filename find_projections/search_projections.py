@@ -162,19 +162,20 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
              return None
 
          testds = Datset(np.ascontiguousarray(inputs, dtype=float))
-         rows = testds.get_size()
-         predictedTargets = numpy.zeros(rows)
+         rows = testds.getSize()
+         predictedTargets = np.zeros(rows)
+         num = self.fmap.get_num_projections()
 
          # Loop through all the test rows
          for j in range(rows):
 
              # Loop through all the projections in order of attributes
-             predicted = false
+             predicted = False
              for i in range(num):
                  pr = self.fmap.get_projection(i)
-                 if pr.point_lies_in_projection(testDs, j) is true:
+                 if pr.point_lies_in_projection(testds, j) is true:
                      predictedTargets[j] = pr.get_projection_metric()
-                     predicted = true
+                     predicted = True
                      break
 
                      # Predict using outside blackbox classifier

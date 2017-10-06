@@ -27,7 +27,9 @@ for i in range(num):
   pr.pprojection()
 
 # Search for easy-to-classify data (decision list)
-fmap = search_object.find_easy_explain_data()
+search_object.fit()
+
+search_object.produce(result)
 
 num = fmap.get_num_projections()
 # Loop through all the projections in order of attributes

@@ -1,0 +1,14 @@
+{
+    "problemId": "r_26_problem",
+    "redacted": true,
+    "descriptionFile": "problemDescription.txt",
+    "taskType": "regression",
+    "datasets": [
+        "r_26_dataset"
+    ],
+    "target": {
+        "field": "log_radon"
+    },
+    "metric": "rootMeanSquaredError",
+    "outputType": "regressionValue"
+}

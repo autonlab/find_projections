@@ -1,0 +1,50 @@
+{
+    "datasetId": "r_26_dataset",
+    "redacted": true,
+    "descriptionFile": "dataDescription.txt",
+    "rawData": true,
+    "rawDataFileTypes": {
+        ".csv": "text/csv"
+    },
+    "trainData": {
+        "numSamples": 735,
+        "trainData": [
+            {
+                "varName": "d3mIndex",
+                "varDescription": "",
+                "varType": "integer",
+                "varRole": "index"
+            },
+            {
+                "varName": "radonFile",
+                "varDescription": "",
+                "varType": "text",
+                "varRole": "file"
+            },
+            {
+                "varName": "radonFile_index",
+                "varDescription": "",
+                "varType": "integer",
+                "varRole": "index"
+            }
+        ],
+        "trainTargets": [
+            {
+                "varName": "d3mIndex",
+                "varDescription": "",
+                "varType": "integer",
+                "varRole": "index"
+            },
+            {
+                "varName": "log_radon",
+                "varDescription": "",
+                "varType": "float",
+                "varRole": "target"
+            }
+        ]
+    },
+    "testData": {
+        "numSamples": 184
+    },
+    "testDataSchemaMirrorsTrainDataSchema": true
+}

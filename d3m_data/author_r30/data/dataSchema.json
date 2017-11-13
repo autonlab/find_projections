@@ -1,0 +1,68 @@
+{
+    "datasetId": "r_30_dataset",
+    "redacted": true,
+    "descriptionFile": "dataDescription.txt",
+    "rawData": true,
+    "rawDataFileTypes": {
+        ".txt": "text/plain"
+    },
+    "trainData": {
+        "numSamples": 114,
+        "trainData": [
+            {
+                "varName": "d3mIndex",
+                "varDescription": "",
+                "varType": "integer",
+                "varRole": "index"
+            },
+            {
+                "varName": "text_fileName",
+                "varDescription": "",
+                "varType": "text",
+                "varRole": "file"
+            },
+            {
+                "varName": "text_language",
+                "varDescription": "",
+                "varType": "categorical",
+                "varRole": "attribute"
+            },
+            {
+                "varName": "author_gender",
+                "varDescription": "",
+                "varType": "categorical ",
+                "varRole": "attribute"
+            },
+            {
+                "varName": "author_language",
+                "varDescription": "",
+                "varType": "categorical ",
+                "varRole": "attribute"
+            },
+            {
+                "varName": "author_region",
+                "varDescription": "",
+                "varType": "categorical ",
+                "varRole": "attribute"
+            }
+        ],
+        "trainTargets": [
+            {
+                "varName": "d3mIndex",
+                "varDescription": "",
+                "varType": "integer",
+                "varRole": "index"
+            },
+            {
+                "varName": "personality",
+                "varDescription": "",
+                "varType": "categorical",
+                "varRole": "target"
+            }
+        ]
+    },
+    "testData": {
+        "numSamples": 29
+    },
+    "testDataSchemaMirrorsTrainDataSchema": true
+}

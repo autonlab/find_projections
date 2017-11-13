@@ -1,0 +1,1 @@
+The  style  in  which  a  text  is  written  reflects  an  array  of meta-information  concerning  the  text  (e.g.,  topic,  register, genre)  and  its  author  (e.g.,  gender,  region,  age,  personality). In this problem, the goal is to build a model that takes written texts as input and predicts the authors' personality.

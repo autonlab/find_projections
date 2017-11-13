@@ -33,3 +33,17 @@ Valid values for mode are -
 0 : Tries to find low variance boxes
 1 : Tries to find high mean boxes
 2 : Tries to find low mean boxes
+
+Primitive Demo in Jupyter Notebook
+-----------------------------
+Opening demo.ipynb in Jupyter facilities running multiple sample experiments on seed datasets
+
+demo.ipynb: Includes many types of experiments on various datasets
+demo_classification.ipynb: Includes basic classification mode experiments on seed datasets
+
+demo_scripts/ holds functions used in the demo notebooks and d3m_data/ holds seed datasets
+load_d3m_data.py - Data for demo is loaded from raw seed datasets and then manipulated to remove missing values.  Each seed dataset is handled differently
+mod.py - Functions facilitating use of projections in decision list models
+rank.py - Functions for sorting output by purity or support used to identify most interesting projections
+utils.py - Functions for manipulating raw datasets
+viz.py - Functions for visualizing projection output as boxes in 2D space

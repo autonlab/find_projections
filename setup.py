@@ -3,7 +3,7 @@ from distutils.core import Extension
 import os, sys
 
 import pip
-pip.main(['install', '--user', 'numpy'])
+pip.main(['install', 'numpy'])
 
 home_folder = os.path.expanduser("~")
 user_site_packages_folder = "{0}/.local/lib/python{1}.{2}/site-packages".format(home_folder, sys.version_info[0], sys.version_info[1])
@@ -32,5 +32,10 @@ setup(
         author_email = 'sray@cs.cmu.edu',
         description = 'Search for 2-d projection boxes separating out classes/quantiles of output',
         ext_modules = [ find_projections_module ],
-        packages = ['find_projections']
+        packages = ['find_projections'],
+		entry_points = {
+			'd3m.primitives': [
+			    'cmu.autonlab.find_projections = find_projections'
+			]
+		}
 )

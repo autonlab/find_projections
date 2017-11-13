@@ -55,6 +55,7 @@ indices_array *Helper::mk_indices_array_sorted_values(Datset &ds, std::vector<in
       d[k] = value;
     }
     std::vector<int> *iv = sort_indexes(d);
+
     ia->set_indices(i, iv);
   }
 

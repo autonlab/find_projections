@@ -158,27 +158,29 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
      Returns predictions made on test data from prior saved list of projections.
      """
      def produce(self, inputs):
-         if fmap is None:
+         if self.fmap is None:
              return None
 
-         testds = Datset(inputs)
-         rows = testds.get_size()
-         predictedTargets = numpy.zeros(rows)
+         testds = Datset(np.ascontiguousarray(inputs, dtype=float))
+         rows = testds.getSize()
+         predictedTargets = np.zeros(rows)
+         num = self.fmap.get_num_projections()
 
          # Loop through all the test rows
          for j in range(rows):
 
              # Loop through all the projections in order of attributes
-             predicted = false
+             predicted = False
              for i in range(num):
-                 pr = fmap.get_projection(i)
-                 if pr.point_lies_in_projection(testDs, j) is true:
+                 pr = self.fmap.get_projection(i)
+                 if pr.point_lies_in_projection(testds.ds, j) is True:
                      predictedTargets[j] = pr.get_projection_metric()
-                     predicted = true
+                     predicted = True
                      break
 
-                     # Predict using outside blackbox classifier
-                     predictedTargets[j] = -1 #clf.predict(testData[j,:])
+             # Predict using outside blackbox classifier
+             if predicted is False:
+               predictedTargets[j] = -1 #clf.predict(testData[j,:])
 
          return predictedTargets
 

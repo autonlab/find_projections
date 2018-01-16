@@ -1,0 +1,30 @@
+{
+    "problemId": "r_30_problem",
+    "redacted": true,
+    "descriptionFile": "problemDescription.txt",
+    "taskType": "classification",
+    "taskSubType": "multiClassClassification",
+    "datasets": [
+        "r_30_dataset"
+    ],
+    "target": {
+        "field": "personality",
+        "classes": [
+            "ISTJ",
+            "INTJ",
+            "ESFJ",
+            "INFP",
+            "INFJ",
+            "ESTJ",
+            "ENFJ",
+            "ENTJ",
+            "ISFJ",
+            "INTP",
+            "ENFP",
+            "ESFP",
+            "ISFP"
+        ]
+    },
+    "metric": "F1",
+    "outputType": "classLabel"
+}

@@ -9,162 +9,158 @@
 ##
 
 import libfind_projections
+from . import feature_map, datset
 import numpy as np
+import typing
+
 from primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
-from typing import NamedTuple
+import d3m_metadata
+from d3m_metadata.metadata import PrimitiveMetadata
+from d3m_metadata import hyperparams
+from d3m_metadata import params
 
-def validate_params(ds, binsize, support, purity, mode, num_threads):
-    if ds.isValid() is False:
-        return False
+Input = d3m_metadata.container.ndarray
+Output = d3m_metadata.container.ndarray
+Predict = d3m_metadata.container.ndarray
 
-    size = ds.getSize()
+class SearchParams(params.Params):
+     is_fitted: bool
 
-    if ( binsize <= 0 )  or ( binsize >= size ):
-        return False
-        
-    if ( support >= size ) :
-        return False
-        
-    if ( purity <= 0.0 ) or ( purity >= 1.0 ) :
-        return False  
+class SearchHyperparams(hyperparams.Hyperparams):
+     binsize = hyperparams.UniformInt(lower=1, upper=1000,default=10,description='No. of data points for binning each feature.')
+     support = hyperparams.UniformInt(lower=1, upper=10000,default=100,description='Minimum number of data points to be present in a projection box for evaluation.')
+     purity = hyperparams.Uniform(lower=0.01, upper=1.0,default=0.9,description='Minimum purity (class proportion) in a projection box for discrete class output.')
+     num_threads = hyperparams.UniformInt(lower=1, upper=10,default=1,description='No. of threads for multi-threaded operation.')
+     validation_size = hyperparams.Uniform(lower=0.01, upper=0.5,default=0.1,description='Proportion of training data which is held out for validation purposes.')
 
-    if ( num_threads < 1 ) :
-        return False;
-
-    return True
-
-Input = np.ndarray
-Output = np.ndarray
-Params = NamedTuple('Params', [
-    ('is_classifier', bool),
-    ('binsize', int),
-    ('support', int),
-    ('purity', float),
-    ('mode', int),
-    ('num_threads', int),
-    ('validation_size', float)    
-])
-
-class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
+class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchHyperparams]):
      """
      Class to perform different types of search operations
-     :param is_classifier: True for discrete-class output. False for numeric output.
-     :type: boolean
-     :param binsize: No. of data points for binning. Should be a positive integer
-     :type: Integer
-     :param support: Minimum number of data points to be present in a projection box for evaluation. Should be a positive integer
-     :type: Integer
-     :param purity: Minimum purity (class proportion) in a projection box. Should be in the range 0.0 - 1.0
-     :type: Double
-     :param mode: Used for numeric output (regression-based analysis). Valid values are 0, 1, 2.
-     :type: Integer
-     :param num_threads: No. of threads for multi-threaded operation. Should be a positive integer
-     :type: Integer
-     :param validation_size: Proportion of training data which is held out for validation purposes. Should be in the range 0.0 - 0.5
-     :type: Double
      """
-     def __init__(self, is_classifier=True, binsize=10, support=100, purity=0.9, mode=1, num_threads=1, validation_size=0.1):
-         super(Search, self).__init__()
-         self.search_obj = libfind_projections.search()
-         self.binsize = binsize
-         self.support = support
-         self.purity = purity
-         self.mode = mode
-         self.num_threads = num_threads
-         self.validation_size = validation_size
-         self.ds = None
-         self.fmap = None
-         self.is_classifier = True
+
+     metadata = PrimitiveMetadata({
+         "id": "84f39131-6618-4d90-9590-b79d41dfb093",
+         "version": "2.0",
+         "name": "find projections",
+         "description": "Searching 2-dimensional projection boxes in raw data separating out homogeneous data points",
+         "python_path": "d3m.primitives.cmu.autonlab.find_projections.Search",
+         "primitive_family": "CLASSIFICATION",
+         "algorithm_types": [ "ASSOCIATION_RULE_LEARNING", "DECISION_TREE" ],
+		 "keywords": ["classification", "rule learning"],
+         "source": {
+             "name": "CMU",
+             "uris": [ "https://gitlab.datadrivendiscovery.org/sray/find_projections.git" ]
+         }
+     })
+
+     def __init__(self, *, hyperparams: SearchHyperparams, random_seed: int = 0, docker_containers: typing.Union[typing.Dict[str, str], None] = None) -> None:
+         self._search_obj = libfind_projections.search()
+         self.hyperparams = hyperparams
+         self._ds = None
+         self._fmap = None
+         self._is_fitted = False
+         self.random_seed = random_seed
+         self.docker_containers = docker_containers
          
      """
      Comprehensively evaluates all possible pairs of 2-d projections in the data
      Returns all projection boxes which match search criteria
-     :returns: FeatureMap instance containing all the projection boxes found meeting the search criteria
-     :rtype: FeatureMap
+     Returns
+     -------
+     FeatureMap instance containing all the projection boxes found
      """
-     def search_projections(self):
-         valid = validate_params(self.ds, self.binsize, self.support, self.purity, self.mode, self.num_threads)
+     def search_projections(self) -> feature_map.FeatureMap:
+         valid = datset.validate_params(self._ds, self.hyperparams['binsize'], self.hyperparams['support'])
          if valid is False:
              print("Invalid parameters!")
              return None
-         return FeatureMap(self.search_obj.search_projections(self.ds.ds, self.binsize, self.support, self.purity, self.mode, self.num_threads))
+         return feature_map.FeatureMap(self._search_obj.search_projections(self._ds.ds, self.hyperparams['binsize'], self.hyperparams['support'],
+          self.hyperparams['purity'], 1, self.hyperparams['num_threads']))
 
      """
      Learns decision list of projection boxes for easy-to-explain data (for classification/regression)
      Returns projection boxes in a decision-list based scheme (if-else-if)
-     :returns: FeatureMap instance containing all the projection boxes found meeting the search criteria
-     :rtype: FeatureMap
+     Returns
+     -------
+     FeatureMap instance containing all the projection boxes found
      """
-     def find_easy_explain_data(self):
-         valid = validate_params(self.ds, self.binsize, self.support, self.purity, self.mode, self.num_threads)
+     def find_easy_explain_data(self) -> feature_map.FeatureMap:
+         valid = datset.validate_params(self._ds, self.hyperparams['binsize'], self.hyperparams['support'])
          if valid is False:
              print("Invalid parameters!")
              return None
-         if ( self.validation_size <= 0.0 ) or ( self.validation_size > 0.5 ) :
-             return None
-         return FeatureMap(self.search_obj.find_easy_explain_data(self.ds.ds, self.validation_size, self.binsize, self.support, self.purity, self.mode, self.num_threads))
+         return feature_map.FeatureMap(self._search_obj.find_easy_explain_data(self._ds.ds, self.hyperparams['validation_size'], self.hyperparams['binsize'],
+          self.hyperparams['support'], self.hyperparams['purity'], 1, self.hyperparams['num_threads']))
+
+     """
+     Return the FeatureMap instance containing all the projection boxes learnt
+     Returns
+     -------
+     FeatureMap instance containing all the projection boxes found
+     """
+     def get_feature_map(self) -> feature_map.FeatureMap:
+         return self._fmap
 
      """
      Learns decision list of projection boxes for easy-to-explain data (for classification/regression)
      """
-     def fit(self, timeout=None, iterations=None):
-         self.fmap = self.find_easy_explain_data() 
+     def fit(self, *, timeout: float = None, iterations: int = None) -> None:
+         self._fmap = self.find_easy_explain_data() 
 
      """
      Sets input and output feature space.
-     :param inputs: 2-d numpy array of floats (dense, no missing values)
-     :param outputs: 1-d numpy array of floats (dense)
+     Parameters
+     ----------
+     inputs : Input
+         A nxd matrix of training data points (dense, no missing values)
+
+     outputs: Output
+         A nx1 numpy array of floats (dense)
+
      """
-     def set_training_data(self, inputs, outputs):
-         self.ds = Datset(np.ascontiguousarray(inputs, dtype=float))
-         if self.is_classifier is True:
-           self.ds.setOutputForClassification(np.ascontiguousarray(outputs, dtype=float))
-         else:
-           self.ds.setOutputForRegression(np.ascontiguousarray(outputs, dtype=float))
+     def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
+         self._ds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
+         self._ds.setOutputForClassification(np.ascontiguousarray(outputs, dtype=float))
+         
+         self._fmap = None
+         self._is_fitted = True
 
      """
      Returns all the search parameters in Params object
      """
-     def get_params(self):
-         return Params(is_classifier=self.is_classifier, binsize=self.binsize, support=self.support, purity=self.purity, mode=self.mode, num_threads=self.num_threads, validation_size=self.validation_size)
+     def get_params(self) -> SearchParams:
+         return SearchParams(is_fitted = self._is_fitted)
 
      """
      Sets all the search parameters from a Params object
      :param is_classifier: True for discrete-class output. False for numeric output.
      :type: boolean
-     :param binsize: No. of data points for binning. Should be a positive integer
-     :type: Integer
-     :param support: Minimum number of data points to be present in a projection box for evaluation. Should be a positive integer
-     :type: Integer
-     :param purity: Minimum purity (class proportion) in a projection box. Should be in the range 0.0 - 1.0
-     :type: Double
-     :param mode: Used for numeric output (regression-based analysis). Valid values are 0, 1, 2.
-     :type: Integer
-     :param num_threads: No. of threads for multi-threaded operation. Should be a positive integer
-     :type: Integer
-     :param validation_size: Proportion of training data which is held out for validation purposes. Should be in the range 0.0 - 0.5
      :type: Double
      """
-     def set_params(self, params):
-         self.is_classifier=params.is_classifier
-         self.binsize=params.binsize
-         self.support=params.support
-         self.purity=params.purity
-         self.mode=params.mode
-         self.num_threads=params.num_threads
-         self.validation_size=params.validation_size
+     def set_params(self, *, params: SearchParams) -> None:
+         self._is_fitted = params.is_fitted
 
      """
      Returns predictions made on test data from prior saved list of projections.
+     Parameters
+     ----------
+     inputs : Input
+         A nxd matrix of test data points
+
+     Returns
+     -------
+     Predict
+         A nx1 array of predictions
+
      """
-     def produce(self, inputs):
-         if self.fmap is None:
+     def produce(self, *, inputs: Input) -> Predict:
+         if self._fmap is None:
              return None
 
-         testds = Datset(np.ascontiguousarray(inputs, dtype=float))
+         testds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
          rows = testds.getSize()
          predictedTargets = np.zeros(rows)
-         num = self.fmap.get_num_projections()
+         num = self._fmap.get_num_projections()
 
          # Loop through all the test rows
          for j in range(rows):
@@ -172,7 +168,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
              # Loop through all the projections in order of attributes
              predicted = False
              for i in range(num):
-                 pr = self.fmap.get_projection(i)
+                 pr = self._fmap.get_projection(i)
                  if pr.point_lies_in_projection(testds.ds, j) is True:
                      predictedTargets[j] = pr.get_projection_metric()
                      predicted = True
@@ -183,68 +179,3 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, Params]):
                predictedTargets[j] = -1 #clf.predict(testData[j,:])
 
          return predictedTargets
-
-class FeatureMap:
-    """
-    Container class containing projection boxes found from search operations
-    """
-    def __init__(self, fmap):
-        self.fmap = fmap
-        
-    """
-    Returns the total number of projection boxes in this container object
-    """
-    def get_num_projections(self):
-        return self.fmap.get_num_projections()
-    
-    """
-    Retrieve the i'th projection-box
-    """
-    def get_projection(self, i):
-        if ( i <  0 ) :
-            return None
-        return self.fmap.get_projection(i)
-    
-class Datset:
-
-     """
-     Create Datset instance with numpy 2-d array of floats.
-     """
-     def __init__(self, data):
-         rows = data.shape[0]
-         cols = data.shape[1]
-
-         if data.dtype not in np.sctypes['float']:
-             return None
-
-         self.ds = libfind_projections.Datset(data)
-        
-     """
-     Set output array for classification task
-     """ 
-     def setOutputForClassification(self, output):
-         if ( np.issubdtype(output.dtype, np.float ) ) :
-            self.ds.fill_datset_output_for_classification(output)  
-         else:
-            raise Exception("Invalid classification data type")
-
-     """
-     Set output array for regression task
-     """ 
-     def setOutputForRegression(self, output):
-         if ( np.issubdtype(output.dtype, np.float ) ) :
-            self.ds.fill_datset_output_for_regression(output)  
-         else:
-            raise Exception("Invalid regressionion data type")
-
-     """
-     Checks if Datset instance has been populated properly.
-     """
-     def isValid(self):
-         return self.ds.is_valid()
-
-     """
-     Returns the number of data points
-     """
-     def getSize(self):
-         return self.ds.get_size()

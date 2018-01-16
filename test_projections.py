@@ -1,8 +1,8 @@
-#!/bin/env python27
 
 import sys, csv
 import numpy
 import find_projections.search_projections as search_projections
+import find_projections.search_numeric_projections as search_numeric_projections
 
 # Read input feature set
 result = numpy.random.rand(1000,2).astype("float")
@@ -11,10 +11,11 @@ result = numpy.random.rand(1000,2).astype("float")
 # Read output feature for classification
 output = numpy.random.randint(2, size=(1000,)).astype("float")
 
+hyperparams = search_projections.SearchHyperparams(purity=0.6, binsize=10, support=100, num_threads=1, validation_size=0.1)
 # Create search object and parameters
-search_object = search_projections.Search(purity=0.6)
+search_object = search_projections.Search(hyperparams=hyperparams)
 
-search_object.set_training_data(result, output)
+search_object.set_training_data(inputs=result, outputs=output)
 
 # Search comprehensively for projection boxes
 fmap = search_object.search_projections()
@@ -23,15 +24,14 @@ num = fmap.get_num_projections()
 # Loop through all the projections in order of attributes
 for i in range(num):
   pr = fmap.get_projection(i)
-  #print pr.get_total()
   pr.pprojection()
 
 # Search for easy-to-classify data (decision list)
 search_object.fit()
 
-predicted = search_object.produce(result)
-print(predicted)
+predicted = search_object.produce(inputs=result)
 
+fmap = search_object.get_feature_map()
 num = fmap.get_num_projections()
 # Loop through all the projections in order of attributes
 for i in range(num):
@@ -40,15 +40,15 @@ for i in range(num):
   pr.pprojection()
 
 # REGRESSION
-p = search_object.get_params()
-p = p._replace(is_classifier = False)
-p = p._replace(support = 10)
-search_object.set_params(p)
-search_object.set_training_data(result, output)
+hyperparams = search_numeric_projections.SearchNumericHyperparams(binsize=10, support=10, mode=1, num_threads=1, validation_size=0.1)
+# Create search object and parameters
+search_object = search_numeric_projections.SearchNumeric(hyperparams=hyperparams)
+search_object.set_training_data(inputs=result, outputs=output)
 
-# Search comprehensively for projection boxes
-fmap = search_object.search_projections()
+# Search or easy-to-regress data (decision list)
+search_object.fit()
 
+fmap = search_object.get_feature_map()
 num = fmap.get_num_projections()
 
 # Loop through all the projections in order of attributes

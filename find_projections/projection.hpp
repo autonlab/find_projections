@@ -103,7 +103,8 @@ class projection {
 
   virtual const int get_total() = 0;
 
-  static void print_decision_list(std::vector<projection *> garr, Datset &ds, std::vector<double> &proportions) {
+  static void print_decision_list(std::vector<projection *> garr, Datset &ds, std::vector<double> &proportions,
+  								  bool is_numeric_problem) {
     char buf1[10000], buf2[10000];
     for(unsigned int i=0; i<garr.size(); i++) {
       projection *pr = garr[i];
@@ -111,8 +112,13 @@ class projection {
       sprintf(buf2, "x%d", pr->get_att2());
       double accuracy = proportions[i] * 100;
       const char *keyword = (i == 0)?"IF":"ELSE IF";
-      printf("%s %f <= %s <= %f AND %f <= %s <= %f, Coverage = %0.2f percent\n", keyword,
-	     pr->get_att1_start(), buf1, pr->get_att1_end(), pr->get_att2_start(), buf2, pr->get_att2_end(), accuracy);
+      printf("%s %f <= %s <= %f AND %f <= %s <= %f", keyword,
+	     pr->get_att1_start(), buf1, pr->get_att1_end(), pr->get_att2_start(), buf2, pr->get_att2_end());
+	  if(!is_numeric_problem)
+		 printf(", Class = %d", (int)pr->get_projection_metric());
+      else
+		 printf(", Mean = %f", pr->get_projection_metric());
+	  printf(", Coverage = %0.2f percent\n", accuracy);
     }
     printf("\n");
   }

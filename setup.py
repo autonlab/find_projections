@@ -31,12 +31,13 @@ setup(
         author = 'Saswati Ray',
         author_email = 'sray@cs.cmu.edu',
         description = 'Search for 2-d projection boxes separating out classes/quantiles of output',
+        keywords = 'd3m_primitive',
         ext_modules = [ find_projections_module ],
         packages = ['find_projections'],
-		entry_points = {
-			'd3m.primitives': [
-			    'cmu.autonlab.find_projections.Search = find_projections:Search',
-				'cmu.autonlab.find_projections.SearchNumeric = find_projections:SearchNumeric'
-			]
-		}
+        entry_points = {
+            'd3m.primitives': [
+                'cmu.autonlab.find_projections.Search = find_projections:Search',
+                'cmu.autonlab.find_projections.SearchNumeric = find_projections:SearchNumeric'
+            ]
+        }
 )

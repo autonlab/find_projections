@@ -35,7 +35,8 @@ class SearchHyperparams(hyperparams.Hyperparams):
 
 class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchHyperparams]):
      """
-     Class to perform different types of search operations
+     Class to search for 2-d projection boxes in raw feature space for discrete(categorical) output (for classification problems) .
+     For discrete output, the algorithm tries to find 2-d projection boxes which can separate out any class of data from the rest with high purity.
      """
 
      metadata = PrimitiveMetadata({
@@ -63,7 +64,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          self.docker_containers = docker_containers
          
      """
-     Comprehensively evaluates all possible pairs of 2-d projections in the data
+     Comprehensively evaluates all possible pairs of 2-d projection boxes in the data
      Returns all projection boxes which match search criteria
      Returns
      -------
@@ -78,7 +79,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
           self.hyperparams['purity'], 1, self.hyperparams['num_threads']))
 
      """
-     Learns decision list of projection boxes for easy-to-explain data (for classification/regression)
+     Learns decision list of projection boxes for easy-to-explain data (for classification)
      Returns projection boxes in a decision-list based scheme (if-else-if)
      Returns
      -------
@@ -102,7 +103,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          return self._fmap
 
      """
-     Learns decision list of projection boxes for easy-to-explain data (for classification/regression)
+     Learns decision list of projection boxes for easy-to-explain data (for classification)
      """
      def fit(self, *, timeout: float = None, iterations: int = None) -> None:
          self._fmap = self.find_easy_explain_data() 

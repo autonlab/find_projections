@@ -35,7 +35,8 @@ class SearchNumericHyperparams(hyperparams.Hyperparams):
 
 class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericParams, SearchNumericHyperparams]):
      """
-     Class to perform different types of search operations
+     Class to search for 2-d projection boxes in raw feature space for numeric output (for regression problems).
+     For numeric output, the algorithm tries to find 2-d projection boxes which can separate out data points with low variance from the rest.
      """
 
      metadata = PrimitiveMetadata({
@@ -46,7 +47,7 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
          "python_path": "d3m.primitives.cmu.autonlab.find_projections.SearchNumeric",
          "primitive_family": "REGRESSION",
          "algorithm_types": [ "ASSOCIATION_RULE_LEARNING", "DECISION_TREE" ],
-		 "keywords": ["regression", "rule learning"],
+         "keywords": ["regression", "rule learning"],
          "source": {
              "name": "CMU",
              "uris": [ "https://gitlab.datadrivendiscovery.org/sray/find_projections.git" ]

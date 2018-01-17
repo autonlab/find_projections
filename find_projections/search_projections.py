@@ -47,11 +47,15 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          "python_path": "d3m.primitives.cmu.autonlab.find_projections.Search",
          "primitive_family": "CLASSIFICATION",
          "algorithm_types": [ "ASSOCIATION_RULE_LEARNING", "DECISION_TREE" ],
-		 "keywords": ["classification", "rule learning"],
+         "keywords": ["classification", "rule learning"],
          "source": {
              "name": "CMU",
              "uris": [ "https://gitlab.datadrivendiscovery.org/sray/find_projections.git" ]
-         }
+         },
+         "installation": [{
+             "type": "PIP",
+             "package_uri": "git+https://gitlab.datadrivendiscovery.org/sray/find_projections.git"
+         }]
      })
 
      def __init__(self, *, hyperparams: SearchHyperparams, random_seed: int = 0, docker_containers: typing.Union[typing.Dict[str, str], None] = None) -> None:

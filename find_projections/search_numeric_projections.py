@@ -51,7 +51,11 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
          "source": {
              "name": "CMU",
              "uris": [ "https://gitlab.datadrivendiscovery.org/sray/find_projections.git" ]
-         }
+         },
+         "installation": [{
+             "type": "PIP",
+             "package_uri": "git+https://gitlab.datadrivendiscovery.org/sray/find_projections.git"
+         }]
      })
 
      def __init__(self, *, hyperparams: SearchNumericHyperparams, random_seed: int = 0, docker_containers: typing.Union[typing.Dict[str, str], None] = None) -> None:

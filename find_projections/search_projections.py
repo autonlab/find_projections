@@ -54,13 +54,13 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          },
          "installation": [
          {
-             "type": "PIP",
-             "package_uri": "git+https://gitlab.datadrivendiscovery.org/sray/find_projections.git"
-         },
-         {
              "type": "UBUNTU",
              "package": "libboost-all-dev",
              "version": "1.65.1"
+         },
+         {
+             "type": "PIP",
+             "package_uri": "git+https://gitlab.datadrivendiscovery.org/sray/find_projections.git"
          }
          ]
      })

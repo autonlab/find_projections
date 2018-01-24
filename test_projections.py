@@ -1,17 +1,28 @@
 
 import sys, csv
 import numpy
+from sklearn import preprocessing
+
+#from d3m.primitives.cmu.autonlab.find_projections import Search, SearchNumeric
+
 import find_projections.search_projections as search_projections
 import find_projections.search_numeric_projections as search_numeric_projections
 
 # Read input feature set
-result = numpy.random.rand(1000,2).astype("float")
+reader = csv.reader(open(sys.argv[1], "r"), delimiter=",")
+x = list(reader)
+result = numpy.array(x).astype("float")
+#result = numpy.random.rand(1000,2).astype("float")
 
 # CLASSIFICATION
 # Read output feature for classification
-output = numpy.random.randint(2, size=(1000,)).astype("float")
+reader = csv.reader(open(sys.argv[2], "r"), delimiter=",")
+x = list(reader)
+#output = numpy.random.randint(2, size=(1000,)).astype("float")
 
-hyperparams = search_projections.SearchHyperparams(purity=0.6, binsize=10, support=100, num_threads=1, validation_size=0.1)
+output = numpy.array(x).astype("float")[:,0]
+
+hyperparams = search_projections.SearchHyperparams(purity=0.95, binsize=10, support=100, num_threads=1, validation_size=0.1)
 # Create search object and parameters
 search_object = search_projections.Search(hyperparams=hyperparams)
 

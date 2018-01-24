@@ -145,7 +145,7 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      :type: Double
      """
      def set_params(self, *, params: SearchNumericParams) -> None:
-         self._is_fitted = params.is_fitted
+         self._is_fitted = params['is_fitted']
 
      """
      Returns predictions made on test data from prior saved list of projections.

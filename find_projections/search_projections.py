@@ -11,12 +11,12 @@
 import libfind_projections
 from . import feature_map, datset
 import numpy as np
-import typing
+import typing, sys, os
 
 from primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
 import d3m_metadata
 from d3m_metadata.metadata import PrimitiveMetadata
-from d3m_metadata import hyperparams
+from d3m_metadata import hyperparams, utils
 from d3m_metadata import params
 
 Input = d3m_metadata.container.ndarray
@@ -55,7 +55,8 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          "installation": [
          {
              "type": "PIP",
-             "package_uri": "git+https://gitlab.datadrivendiscovery.org/sray/find_projections.git"
+             "package_uri": 'git+https://gitlab.datadrivendiscovery.org/sray/find_projections.git@{git_commit}#egg=find_projections'.format(
+                 git_commit=utils.current_git_commit(os.path.dirname(__file__)))
          }
          ]
      })

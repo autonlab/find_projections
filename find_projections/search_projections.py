@@ -13,15 +13,15 @@ from . import feature_map, datset
 import numpy as np
 import typing, sys, os
 
-from primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
-import d3m_metadata
-from d3m_metadata.metadata import PrimitiveMetadata
-from d3m_metadata import hyperparams, utils
-from d3m_metadata import params
+from d3m.primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
+from d3m.primitive_interfaces import base
+from d3m import container, utils
+import d3m.metadata
+from d3m.metadata import hyperparams, base as metadata_base
+from d3m.metadata import params
 
-Input = d3m_metadata.container.ndarray
-Output = d3m_metadata.container.ndarray
-Predict = d3m_metadata.container.ndarray
+Input = container.ndarray
+Output = container.ndarray
 
 class SearchParams(params.Params):
      is_fitted: bool
@@ -39,7 +39,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
      For discrete output, the algorithm tries to find 2-d projection boxes which can separate out any class of data from the rest with high purity.
      """
 
-     metadata = PrimitiveMetadata({
+     metadata = metadata_base.PrimitiveMetadata({
          "id": "84f39131-6618-4d90-9590-b79d41dfb093",
          "version": "2.0",
          "name": "find projections",
@@ -52,7 +52,13 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
              "name": "CMU",
              "uris": [ "https://gitlab.datadrivendiscovery.org/sray/find_projections.git" ]
          },
+         "precondition": [ metadata_base.PrimitivePrecondition.NO_CATEGORICAL_VALUES ],
          "installation": [
+         {   
+             "type": "UBUNTU",
+             "package": "libboost-python1.63-dev",
+             "version": "1.63.0"
+         },
          {
              "type": "PIP",
              "package_uri": 'git+https://gitlab.datadrivendiscovery.org/sray/find_projections.git@{git_commit}#egg=find_projections'.format(
@@ -61,14 +67,13 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          ]
      })
 
-     def __init__(self, *, hyperparams: SearchHyperparams, random_seed: int = 0, docker_containers: typing.Union[typing.Dict[str, str], None] = None) -> None:
+     def __init__(self, *, hyperparams: SearchHyperparams) -> None:
+         super().__init__(hyperparams = hyperparams)
          self._search_obj = libfind_projections.search()
          self.hyperparams = hyperparams
          self._ds = None
          self._fmap = None
          self._is_fitted = False
-         self.random_seed = random_seed
-         self.docker_containers = docker_containers
          
      """
      Comprehensively evaluates all possible pairs of 2-d projection boxes in the data
@@ -161,7 +166,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          A nx1 array of predictions
 
      """
-     def produce(self, *, inputs: Input) -> Predict:
+     def produce(self, *, inputs: Input) -> base.CallResult[Output]:
          if self._fmap is None:
              return None
 
@@ -186,4 +191,4 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
              if predicted is False:
                predictedTargets[j] = -1 #clf.predict(testData[j,:])
 
-         return predictedTargets
+         return base.CallResult(predictedTargets)

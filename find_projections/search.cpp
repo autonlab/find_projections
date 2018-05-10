@@ -501,7 +501,17 @@ feature_map *search::search_projections(Datset& ds, int bin_size, int support, d
   return table;
 }
 
-bool is_projection_better(projection *pr, int mode, bool is_numeric_problem, int maxsupport, double mean, double sqerr) {
+double compute_lower_confidence_interval(double score, int n, double z)
+{
+  double z_sqd = z*z;
+  double center = (score + (z_sqd/(2*n)))/(1 + (z_sqd/n));
+
+  double bound = (z * sqrt((score*(1-score)/n) + (z_sqd/(4.0*n*n))))/(1 + (z_sqd/n));
+
+  return (center - bound);
+}
+
+bool is_projection_better(projection *pr, int mode, bool is_numeric_problem, double maxpurity, double mean, double sqerr) {
   if(is_numeric_problem) {
     numeric_projection *np = (numeric_projection *)pr;
     switch(mode) {
@@ -515,7 +525,9 @@ bool is_projection_better(projection *pr, int mode, bool is_numeric_problem, int
   }
 
   discrete_projection *dp = (discrete_projection *)pr;
-  return (dp->get_total() > maxsupport);
+  double purity = (double)dp->get_pos()/(double)(dp->get_neg() + dp->get_pos());
+  double purity_lb = compute_lower_confidence_interval(purity, dp->get_total(), 1.96);
+  return purity_lb > maxpurity;
 }
 
 /*
@@ -566,7 +578,7 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
     else
       table = search_for_max_subrectangles_threaded(ds, ftree, *train_rows, bin_size, support, purity, num_threads, mode, *ia);
 
-    int maxsupport = 0;
+    double maxpurity = 0;
     double sqerr = 1E6;
     double mean = (mode == 1) ? 0 : 1E6;
 
@@ -582,22 +594,24 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
         for(k=0; k<array.size(); k++) {
           projection *bestprojection = array.get(k); 
           int valsupport = 0;
-          if(is_projection_better(bestprojection, mode, is_numeric_problem, maxsupport, mean, sqerr) &&
+          if(is_projection_better(bestprojection, mode, is_numeric_problem, maxpurity, mean, sqerr) &&
              bestprojection->is_projection_good_on_validation_set(ds, *val_rows, mode, mean, purity, &valsupport)) {
             if(pr)
               delete pr;
             if(is_numeric_problem) {
               numeric_projection *np = new numeric_projection();
+              pr = np;
+              bestprojection->copy_projection(pr);
               mean = np->get_mean();
               sqerr = np->get_sum_sq_error();
-              pr = np;
             }
             else {
               discrete_projection *dp = new discrete_projection();
-              maxsupport = dp->get_total();
               pr = dp;
+              bestprojection->copy_projection(pr);
+              double mp = (double)dp->get_pos()/(double)(dp->get_neg() + dp->get_pos());
+              maxpurity = compute_lower_confidence_interval(mp, dp->get_total(), 1.96);
             }
-            bestprojection->copy_projection(pr);  
           }
         } //End loop for k
       } // End loop for j
@@ -608,12 +622,8 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
       pr->mk_projection_indices(ds, *train_rows, *ia);
 
       projection *dp = NULL;
-      if(is_numeric_problem) {
+      if(is_numeric_problem) 
         dp = new numeric_projection();
-        numeric_projection *np = (numeric_projection *)pr;
-        double r2 = np->compute_R2(ds, *train_rows);
-        //printf("R2 = %f\n", r2);
-      }
       else
         dp = new discrete_projection();
 

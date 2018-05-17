@@ -118,7 +118,8 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
      Learns decision list of projection boxes for easy-to-explain data (for classification)
      """
      def fit(self, *, timeout: float = None, iterations: int = None) -> None:
-         self._fmap = self.find_easy_explain_data() 
+         self._fmap = self.find_easy_explain_data()
+         self._is_fitted = True 
 
      """
      Sets input and output feature space.
@@ -136,7 +137,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          self._ds.setOutputForClassification(np.ascontiguousarray(outputs, dtype=float))
          
          self._fmap = None
-         self._is_fitted = True
+         self._is_fitted = False
 
      """
      Returns all the search parameters in Params object

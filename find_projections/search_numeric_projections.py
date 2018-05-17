@@ -119,7 +119,8 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      """
      def fit(self, *, timeout: float = None, iterations: int = None) -> None:
          self._fmap = self.find_easy_explain_data() 
-
+         self._is_fitted = True
+		   
      """
      Sets input and output feature space.
      Parameters
@@ -136,7 +137,7 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
          self._ds.setOutputForRegression(np.ascontiguousarray(outputs, dtype=float))
          
          self._fmap = None
-         self._is_fitted = True
+         self._is_fitted = False
 
      """
      Returns all the search parameters in Params object

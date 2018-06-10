@@ -27,11 +27,11 @@ class SearchNumericParams(params.Params):
      is_fitted: bool
 
 class SearchNumericHyperparams(hyperparams.Hyperparams):
-     binsize = hyperparams.UniformInt(lower=1, upper=1000,default=10,description='No. of data points for binning each feature.')
-     support = hyperparams.UniformInt(lower=1, upper=10000,default=100,description='Minimum number of data points to be present in a projection box for evaluation.')
-     mode = hyperparams.Enumeration(values=[0,1,2],default=1,description='Used for numeric output. 1 for high mean, 2 for low mean and 0 for low variance boxes.')
-     num_threads = hyperparams.UniformInt(lower=1, upper=10,default=1,description='No. of threads for multi-threaded operation.')
-     validation_size = hyperparams.Uniform(lower=0.01, upper=0.5,default=0.1,description='Proportion of training data which is held out for validation purposes.')
+     binsize = hyperparams.UniformInt(lower=1, upper=1000,default=10,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='No. of data points for binning each feature.')
+     support = hyperparams.UniformInt(lower=1, upper=10000,default=100,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='Minimum number of data points to be present in a projection box for evaluation.')
+     mode = hyperparams.Enumeration(values=[0,1,2],default=1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ControlParameter'],description='Used for numeric output. 1 for high mean, 2 for low mean and 0 for low variance boxes.')
+     num_threads = hyperparams.UniformInt(lower=1, upper=10,default=1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ResourcesUseParameter'],description='No. of threads for multi-threaded operation.')
+     validation_size = hyperparams.Uniform(lower=0.01, upper=0.5,default=0.1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ControlParameter'],description='Proportion of training data which is held out for validation purposes.')
 
 class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericParams, SearchNumericHyperparams]):
      """
@@ -120,7 +120,7 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      def fit(self, *, timeout: float = None, iterations: int = None) -> None:
          self._fmap = self.find_easy_explain_data() 
          self._is_fitted = True
-		   
+           
      """
      Sets input and output feature space.
      Parameters

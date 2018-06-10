@@ -27,11 +27,11 @@ class SearchParams(params.Params):
      is_fitted: bool
 
 class SearchHyperparams(hyperparams.Hyperparams):
-     binsize = hyperparams.UniformInt(lower=1, upper=1000,default=10,description='No. of data points for binning each feature.')
-     support = hyperparams.UniformInt(lower=1, upper=10000,default=100,description='Minimum number of data points to be present in a projection box for evaluation.')
-     purity = hyperparams.Uniform(lower=0.01, upper=1.0,default=0.9,description='Minimum purity (class proportion) in a projection box for discrete class output.')
-     num_threads = hyperparams.UniformInt(lower=1, upper=10,default=1,description='No. of threads for multi-threaded operation.')
-     validation_size = hyperparams.Uniform(lower=0.01, upper=0.5,default=0.1,description='Proportion of training data which is held out for validation purposes.')
+     binsize = hyperparams.UniformInt(lower=1, upper=1000,default=10,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='No. of data points for binning each feature.')
+     support = hyperparams.UniformInt(lower=1, upper=10000,default=100,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='Minimum number of data points to be present in a projection box for evaluation.')
+     purity = hyperparams.Uniform(lower=0.01, upper=1.0,default=0.9,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='Minimum purity (class proportion) in a projection box for discrete class output.')
+     num_threads = hyperparams.UniformInt(lower=1, upper=10,default=1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ResourcesUseParameter'],description='No. of threads for multi-threaded operation.')
+     validation_size = hyperparams.Uniform(lower=0.01, upper=0.5,default=0.1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ControlParameter'],description='Proportion of training data which is held out for validation purposes.')
 
 class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchHyperparams]):
      """

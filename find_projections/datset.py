@@ -58,3 +58,9 @@ class Datset:
      """
      def getSize(self):
          return self.ds.get_size()
+
+     """
+     Returns the default class/true mean of the output column
+     """
+     def get_default_value(self):
+         return self.ds.get_default_value() 

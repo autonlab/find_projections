@@ -3,7 +3,6 @@ from distutils.core import Extension
 import os, sys
 
 import pip
-pip.main(['install', 'numpy'])
 
 home_folder = os.path.expanduser("~")
 user_site_packages_folder = "{0}/.local/lib/python{1}.{2}/site-packages".format(home_folder, sys.version_info[0], sys.version_info[1])
@@ -37,7 +36,9 @@ setup(
         entry_points = {
             'd3m.primitives': [
                 'cmu.autonlab.find_projections.Search = find_projections:Search',
-                'cmu.autonlab.find_projections.SearchNumeric = find_projections:SearchNumeric'
+                'cmu.autonlab.find_projections.SearchNumeric = find_projections:SearchNumeric',
+                'cmu.autonlab = workaround_ignore_error',
+                'cmu.autonlab.find_projections = workaround_ignore_error',
             ]
         }
 )

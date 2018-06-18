@@ -29,6 +29,37 @@ Datset::Datset(PyObject *object) {
   output_regress = NULL;
 }
 
+double Datset::get_default_value() {
+  double value = 0;
+  if(is_classifier == true) {
+    std::vector<int> class_dist = std::vector<int>(num_classes);
+    for(int i=0; i<rows; i++) {
+      int value = this->ds_output_ref(i);
+      class_dist[value]++;
+    }
+    int argmax = 0;
+    int max = 0;
+    for(unsigned int i=0; i<class_dist.size(); i++) {
+      if(class_dist[i] > max) {
+        max = class_dist[i];
+        argmax = i;
+      }
+    }
+    value = argmax;
+  }
+  else {
+    double truemean = 0.0;
+    for(int i=0; i<rows; i++) {
+      double val = this->ds_output_ref(i);
+      truemean += val;
+    }
+    truemean /= rows;
+    value = truemean;
+  }
+
+  return value;
+}
+
 double Datset::ds_real_ref(int i, int j) {
   return (*darray)(i, j);
 }

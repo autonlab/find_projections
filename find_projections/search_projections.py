@@ -74,6 +74,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          self._ds = None
          self._fmap = None
          self._is_fitted = False
+         self._default_value = None
          
      """
      Comprehensively evaluates all possible pairs of 2-d projection boxes in the data
@@ -138,6 +139,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          
          self._fmap = None
          self._is_fitted = False
+         self._default_value = self._ds.get_default_value()
 
      """
      Returns all the search parameters in Params object
@@ -190,6 +192,6 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
 
              # Predict using outside blackbox classifier
              if predicted is False:
-               predictedTargets[j] = -1 #clf.predict(testData[j,:])
+               predictedTargets[j] = self._default_value #clf.predict(testData[j,:])
 
          return base.CallResult(predictedTargets)

@@ -40,6 +40,8 @@ class Datset {
   void fill_datset_output_for_regression(PyObject *array);
   double ds_real_ref(int i, int j);
   double ds_output_ref(int i);
+  double get_default_value();
+
   int get_num_classes() {
     return num_classes;
   }

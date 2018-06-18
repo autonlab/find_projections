@@ -15,7 +15,7 @@ result = numpy.random.rand(1000,2).astype("float")
 # Read output feature for classification
 output = numpy.random.randint(2, size=(1000,)).astype("float")
 
-hyperparams = search_projections.SearchHyperparams(purity=0.95, binsize=10, support=100, num_threads=1, validation_size=0.1)
+hyperparams = search_projections.SearchHyperparams(purity=0.75, binsize=10, support=25, num_threads=1, validation_size=0.1)
 # Create search object and parameters
 search_object = search_projections.Search(hyperparams=hyperparams)
 
@@ -33,7 +33,8 @@ for i in range(num):
 # Search for easy-to-classify data (decision list)
 search_object.fit()
 
-predicted = search_object.produce(inputs=result)
+predicted = search_object.produce(inputs=result).value
+print(predicted)
 
 fmap = search_object.get_feature_map()
 num = fmap.get_num_projections()
@@ -44,13 +45,15 @@ for i in range(num):
   pr.pprojection()
 
 # REGRESSION
-hyperparams = search_numeric_projections.SearchNumericHyperparams(binsize=10, support=10, mode=1, num_threads=1, validation_size=0.1)
+hyperparams = search_numeric_projections.SearchNumericHyperparams(binsize=10, support=25, mode=1, num_threads=1, validation_size=0.1)
 # Create search object and parameters
 search_object = search_numeric_projections.SearchNumeric(hyperparams=hyperparams)
 search_object.set_training_data(inputs=result, outputs=output)
 
 # Search or easy-to-regress data (decision list)
 search_object.fit()
+predicted = search_object.produce(inputs=result).value
+print(predicted)
 
 fmap = search_object.get_feature_map()
 num = fmap.get_num_projections()

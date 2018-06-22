@@ -63,4 +63,35 @@ class Datset:
      Returns the default class/true mean of the output column
      """
      def get_default_value(self):
-         return self.ds.get_default_value() 
+         return self.ds.get_default_value()
+    
+     def get_real_ref(self, i, j):
+         return self.ds.ds_real_ref(i, j)     
+   
+     def _point_within_line(self, row, att, start, end):
+         value = self.get_real_ref(row, att)
+         if value >= start and value <= end:
+             return True
+         return False
+
+     def _point_lies_in_projection(self, row, att1, start1, end1, att2, start2, end2):
+         a1 = self._point_within_line(row, att1, start1, end1)
+         a2 = self._point_within_line(row, att2, start2, end2)
+         final = a1 and a2
+         return final
+
+     def _helper(self, fmap, row):
+         for pr in fmap:
+             att1 = pr[0]
+             att2 = pr[1]
+             start1 = pr[2]
+             start2 = pr[3]
+             end1 = pr[4]
+             end2 = pr[5]
+             value = pr[6]
+
+             valid = self._point_lies_in_projection(row, att1, start1, end1, att2, start2, end2)
+             if valid is True:
+                 return (value, True)
+         return (0, False)
+  

@@ -60,6 +60,7 @@ BOOST_PYTHON_MODULE(libfind_projections) {
   .def("is_valid", &Datset::is_valid)
   .def("get_size", &Datset::get_rows)
   .def("get_default_value", &Datset::get_default_value)
+  .def("ds_real_ref", &Datset::ds_real_ref)
   ;
 
   class_<search>("search")

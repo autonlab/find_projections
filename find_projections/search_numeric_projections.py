@@ -27,8 +27,8 @@ class SearchNumericParams(params.Params):
      is_fitted: bool
 
 class SearchNumericHyperparams(hyperparams.Hyperparams):
-     binsize = hyperparams.UniformInt(lower=1, upper=1000,default=10,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='No. of data points for binning each feature.')
-     support = hyperparams.UniformInt(lower=1, upper=10000,default=100,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='Minimum number of data points to be present in a projection box for evaluation.')
+     binsize = hyperparams.UniformInt(lower=1, upper=20,default=10,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='No. of data points for binning each feature.')
+     support = hyperparams.UniformInt(lower=1, upper=100,default=25,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='Minimum number of data points to be present in a projection box for evaluation.')
      mode = hyperparams.Enumeration(values=[0,1,2],default=1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ControlParameter'],description='Used for numeric output. 1 for high mean, 2 for low mean and 0 for low variance boxes.')
      num_threads = hyperparams.UniformInt(lower=1, upper=10,default=1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ResourcesUseParameter'],description='No. of threads for multi-threaded operation.')
      validation_size = hyperparams.Uniform(lower=0.01, upper=0.5,default=0.1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ControlParameter'],description='Proportion of training data which is held out for validation purposes.')
@@ -73,8 +73,16 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
          self.hyperparams = hyperparams
          self._ds = None
          self._fmap = None
+         self._fmap_py = None
          self._is_fitted = False
          self._default_value = None
+
+     def __getstate__(self):
+         return (self.hyperparams, self._fmap_py, self._default_value, self._is_fitted)
+
+     def __setstate__(self, state):
+         self.hyperparams, self._fmap_py, self._default_value, self._is_fitted = state
+         self._fmap = None 
          
      """
      Comprehensively evaluates all possible pairs of 2-d projections in the data
@@ -120,6 +128,18 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      """
      def fit(self, *, timeout: float = None, iterations: int = None) -> None:
          self._fmap = self.find_easy_explain_data() 
+         self._fmap_py = []
+         num = self._fmap.get_num_projections()
+         for i in range(num):
+              pr = self._fmap.get_projection(i)
+              att1 = pr.get_att1()
+              att2 = pr.get_att2()
+              start1 = pr.get_att1_start()
+              start2 = pr.get_att2_start()
+              end1 = pr.get_att1_end()
+              end2 = pr.get_att2_end()
+              value = pr.get_projection_metric()
+              self._fmap_py.append((att1, att2, start1, start2, end1, end2, value,))
          self._is_fitted = True
            
      """
@@ -136,8 +156,8 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
          self._ds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
          self._ds.setOutputForRegression(np.ascontiguousarray(outputs, dtype=float))
-         
          self._fmap = None
+         self._fmap_py = None
          self._is_fitted = False
          self._default_value = self._ds.get_default_value()
 
@@ -170,28 +190,33 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
 
      """
      def produce(self, *, inputs: Input) -> base.CallResult[Output]:
-         if self._fmap is None:
+         if self._fmap is None and self._fmap_py is None:
              return None
 
          testds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
          rows = testds.getSize()
          predictedTargets = np.zeros(rows)
-         num = self._fmap.get_num_projections()
 
          # Loop through all the test rows
          for j in range(rows):
 
              # Loop through all the projections in order of attributes
              predicted = False
-             for i in range(num):
-                 pr = self._fmap.get_projection(i)
-                 if pr.point_lies_in_projection(testds.ds, j) is True:
-                     predictedTargets[j] = pr.get_projection_metric()
-                     predicted = True
-                     break
+             if bool(self._fmap):
+                 num = self._fmap.get_num_projections()
+                 for i in range(num):
+                     pr = self._fmap.get_projection(i)
+                     if pr.point_lies_in_projection(testds.ds, j) is True:
+                         predictedTargets[j] = pr.get_projection_metric()
+                         predicted = True
+                         break
+             else:
+                 (value, predicted) = testds._helper(self._fmap_py, j)
+                 if predicted is True:
+                     predictedTargets[j] = value
 
              # Predict using outside blackbox regressor
              if predicted is False:
-               predictedTargets[j] = self._default_value #clf.predict(testData[j,:])
+                 predictedTargets[j] = self._default_value #clf.predict(testData[j,:])
 
          return base.CallResult(predictedTargets)

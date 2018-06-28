@@ -196,7 +196,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
 
          testds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
          rows = testds.getSize()
-         predictedTargets = np.zeros(rows)
+         predictedTargets = np.zeros(rows, dtype=np.int8)
 
          # Loop through all the test rows
          for j in range(rows):
@@ -208,16 +208,16 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
                  for i in range(num):
                      pr = self._fmap.get_projection(i)
                      if pr.point_lies_in_projection(testds.ds, j) is True:
-                         predictedTargets[j] = pr.get_projection_metric()
+                         predictedTargets[j] = (int)(pr.get_projection_metric())
                          predicted = True
                          break
              else:
                  (value, predicted) = testds._helper(self._fmap_py, j)
                  if predicted is True:
-                     predictedTargets[j] = value
+                     predictedTargets[j] = (int)(value)
 
              # Predict using outside blackbox classifier
              if predicted is False:
-                 predictedTargets[j] = self._default_value #clf.predict(testData[j,:])
+                 predictedTargets[j] = (int)(self._default_value) #clf.predict(testData[j,:])
 
          return base.CallResult(predictedTargets)

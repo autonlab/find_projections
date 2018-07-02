@@ -41,10 +41,12 @@ bool projection::point_lies_in_projection(Datset &ds, int row) {
 projection::projection(int att1, int att2, double att1_start, double att1_end, double att2_start, double att2_end) : 
   att1(att1), att2(att2), att1_start(att1_start), att1_end(att1_end), att2_start(att2_start), att2_end(att2_end) {
   this->indices = NULL;
+  this->coverage = 0.0;
 }
 
 projection::projection() {
   this->indices = NULL;
+  this->coverage = 0.0;
 }
 
 /*

@@ -62,7 +62,7 @@ static double compute_mean(Datset &ds, std::vector<int> &train_rows, std::vector
     truemean += value;
   }
   truemean /= indices.size();
-							 
+                             
   return truemean;
 }
 
@@ -539,6 +539,8 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
   if(!valid)
     return NULL;
 
+  std::vector<int> *subset = ds.get_training_rows();
+
   int i, j, k, rows = ds.get_rows();
   int atts = ds.get_cols();
   unsigned int tcount = 0;
@@ -546,6 +548,16 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
 
    for(int i=0; i<rows; i++)
     seq[i] = i;
+
+  if(subset) {
+    rows = subset->size();
+    seq = *subset;
+  }
+  else {
+    rows = ds.get_rows();
+    for(int i=0; i<rows; i++)
+      seq[i] = i;
+  }
 
   if(val_prop <= 0.0 || val_prop >= 1.0) {
     val_prop = 0.1;
@@ -632,6 +644,7 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
       ia = newia;
       tcount += pr->get_total();
       proportions.push_back((double)tcount/(double)train_rows->size());
+      pr->set_coverage((double)tcount/(double)train_rows->size());
    
       pr->copy_projection(dp);
       pr_array.push_back(dp);

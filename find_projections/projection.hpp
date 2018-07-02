@@ -20,6 +20,7 @@ class projection {
   int att1, att2;                  /* Attributes in the projection */
   double att1_start, att1_end;     /* Att 1's start and end values of the box */
   double att2_start, att2_end;     /* Att 2's start and end values of the box */
+  double coverage;
   std::vector<int> *indices;                   /* Indices of the entire dataset inside this projection */
 
  public:
@@ -47,6 +48,9 @@ class projection {
 
   const double get_att2_end() { return att2_end; }
   void set_att2_end(double att2_end) { this->att2_end = att2_end; }
+
+  const double get_coverage() { return coverage; }
+  const double set_coverage(double coverage) { this->coverage = coverage; }
 
   std::vector<int> *get_indices() {
     return indices;

@@ -1,3 +1,5 @@
 from .search_projections import Search, SearchHyperparams
 from .search_numeric_projections import SearchNumeric, SearchNumericHyperparams
+from .search_projections_hybrid import SearchHybrid, SearchHybridHyperparams
+from .search_numeric_projections_hybrid import SearchHybridNumeric, SearchHybridNumericHyperparams
 from .feature_map import FeatureMap

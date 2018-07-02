@@ -27,6 +27,7 @@ Datset::Datset(PyObject *object) {
 
   output_class = NULL;
   output_regress = NULL;
+  training_rows = NULL;
 }
 
 double Datset::get_default_value() {
@@ -98,6 +99,22 @@ void Datset::fill_datset_output_for_classification(PyObject *object) {
   this->num_classes = uniqueCount;
 }
 
+void Datset::set_training_rows(PyObject *object) {
+  if(this->training_rows) {
+      delete this->training_rows;
+  }
+
+  PyArrayObject *array = reinterpret_cast<PyArrayObject *>(object);
+  int rows = PyArray_DIM(array, 0);
+  this->training_rows = new std::vector<int>(rows);
+
+  double *iter = reinterpret_cast< double * >( PyArray_GETPTR1(array, 0) );
+  for (int i = 0; i < rows; ++i) {
+    int val = (int)iter[i];
+    (*training_rows)[i] = val;
+  }
+}
+
 void Datset::fill_datset_output_for_regression(PyObject *object) {
   is_classifier = false;
 
@@ -120,12 +137,15 @@ void Datset::fill_datset_output_for_regression(PyObject *object) {
 
 Datset::~Datset() {
   if(darray)
-	delete darray;
+    delete darray;
   darray = NULL;
   if(output_class)
-	delete output_class;
+    delete output_class;
   output_class = NULL;
   if(output_regress)
-	delete output_regress;
+    delete output_regress;
   output_regress = NULL;
+  if(training_rows)
+    delete training_rows;
+  training_rows = NULL;
 }

@@ -57,6 +57,7 @@ BOOST_PYTHON_MODULE(libfind_projections) {
   class_<Datset>("Datset", init<PyObject *>())
   .def("fill_datset_output_for_classification", &Datset::fill_datset_output_for_classification)
   .def("fill_datset_output_for_regression", &Datset::fill_datset_output_for_regression)
+  .def("set_training_rows", &Datset::set_training_rows)
   .def("is_valid", &Datset::is_valid)
   .def("get_size", &Datset::get_rows)
   .def("get_default_value", &Datset::get_default_value)
@@ -77,6 +78,7 @@ BOOST_PYTHON_MODULE(libfind_projections) {
     .def("get_att2_start", &projection::get_att2_start)
     .def("get_att1_end", &projection::get_att1_end)
     .def("get_att2_end", &projection::get_att2_end)
+    .def("get_coverage", &projection::get_coverage)
     .def("get_projection_metric", pure_virtual(&projection::get_projection_metric))
     .def("point_lies_in_projection", &projection::point_lies_in_projection)
     ;

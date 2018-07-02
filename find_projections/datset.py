@@ -80,8 +80,11 @@ class Datset:
          final = a1 and a2
          return final
 
-     def _helper(self, fmap, row):
+     def _helper(self, num, fmap, row):
+         index = 0
          for pr in fmap:
+             if num != -1 and index > num:
+                 break
              att1 = pr[0]
              att2 = pr[1]
              start1 = pr[2]
@@ -93,5 +96,6 @@ class Datset:
              valid = self._point_lies_in_projection(row, att1, start1, end1, att2, start2, end2)
              if valid is True:
                  return (value, True)
+             index = index+1
          return (0, False)
   

@@ -211,7 +211,7 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
                          predicted = True
                          break
              else:
-                 (value, predicted) = testds._helper(self._fmap_py, j)
+                 (value, predicted) = testds._helper(-1, self._fmap_py, j)
                  if predicted is True:
                      predictedTargets[j] = value
 

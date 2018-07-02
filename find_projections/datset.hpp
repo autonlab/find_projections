@@ -28,6 +28,7 @@ class Datset {
  private:
   matrix<double> *darray;
   std::vector<int> *output_class;
+  std::vector<int> *training_rows;
   std::vector<double> *output_regress;
   int rows, cols, num_classes;
   bool is_classifier;
@@ -38,6 +39,11 @@ class Datset {
 
   void fill_datset_output_for_classification(PyObject *array);
   void fill_datset_output_for_regression(PyObject *array);
+  void set_training_rows(PyObject *array);
+  std::vector<int> *get_training_rows() {
+    return training_rows;
+  }
+
   double ds_real_ref(int i, int j);
   double ds_output_ref(int i);
   double get_default_value();

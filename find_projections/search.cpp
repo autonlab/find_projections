@@ -457,8 +457,8 @@ feature_map *search_for_max_subrectangles(Datset &ds, feature_tree *ftree, std::
       table->setProjections(i, j, prl);
     } /* Ends for loop for 'j' att */
 
-    if(is_power_of_two(i))
-      printf("Finished all projections containing feature number %d\n", i);
+    //if(is_power_of_two(i))
+    //  printf("Finished all projections containing feature number %d\n", i);
   } /* Ends for loop for 'i' att*/
 
   return table;
@@ -541,13 +541,10 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
 
   std::vector<int> *subset = ds.get_training_rows();
 
-  int i, j, k, rows = ds.get_rows();
+  int i, j, k, rows;
   int atts = ds.get_cols();
   unsigned int tcount = 0;
-  std::vector<int> seq(rows);
-
-   for(int i=0; i<rows; i++)
-    seq[i] = i;
+  std::vector<int> seq;
 
   if(subset) {
     rows = subset->size();
@@ -555,6 +552,7 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
   }
   else {
     rows = ds.get_rows();
+    seq = std::vector<int>(rows);
     for(int i=0; i<rows; i++)
       seq[i] = i;
   }

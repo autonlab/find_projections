@@ -181,7 +181,7 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
      """
      def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
          self._ds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
-         self._ds.setOutputForClassification(np.ascontiguousarray(outputs, dtype=float))
+         self._ds.setOutputForRegression(np.ascontiguousarray(outputs, dtype=float))
 
          self._inputs = inputs
          self._outputs = outputs

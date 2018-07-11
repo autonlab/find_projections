@@ -30,7 +30,7 @@ class SearchHybridNumericParams(params.Params):
 
 class SearchHybridNumericHyperparams(hyperparams.Hyperparams):
      binsize = hyperparams.UniformInt(lower=1, upper=1000,default=10,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='No. of data points for binning each feature.')
-     support = hyperparams.UniformInt(lower=1, upper=10000,default=100,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='Minimum number of data points to be present in a projection box for evaluation.')
+     support = hyperparams.UniformInt(lower=1, upper=10000,default=25,semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],description='Minimum number of data points to be present in a projection box for evaluation.')
      mode = hyperparams.Enumeration(values=[0,1,2],default=1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ControlParameter'],description='Used for numeric output. 1 for high mean, 2 for low mean and 0 for low variance boxes.')
      num_threads = hyperparams.UniformInt(lower=1, upper=10,default=1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ResourcesUseParameter'],description='No. of threads for multi-threaded operation.')
      validation_size = hyperparams.Uniform(lower=0.01, upper=0.5,default=0.1,semantic_types=['https://metadata.datadrivendiscovery.org/types/ControlParameter'],description='Proportion of training data which is held out for validation purposes.')

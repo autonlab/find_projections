@@ -39,8 +39,6 @@ setup(
                 'cmu.autonlab.find_projections.SearchNumeric = find_projections:SearchNumeric',
                 'cmu.autonlab.find_projections.SearchHybrid = find_projections:SearchHybrid',
                 'cmu.autonlab.find_projections.SearchHybridNumeric = find_projections:SearchHybridNumeric',
-                'cmu.autonlab = workaround_ignore_error',
-                'cmu.autonlab.find_projections = workaround_ignore_error',
             ]
         }
 )

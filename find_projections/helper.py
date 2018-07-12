@@ -36,7 +36,6 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
     print(primitive)
     primitive_hyperparams = primitive.metadata.query()['primitive_code']['class_type_arguments']['Hyperparams']
     custom_hyperparams = dict()
-    custom_hyperparams["use_semantic_types"] = True
 
     baseline_accuracies = []
     global_dlist_accuracies = []

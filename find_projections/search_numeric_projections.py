@@ -20,8 +20,8 @@ import d3m.metadata
 from d3m.metadata import hyperparams, base as metadata_base
 from d3m.metadata import params
 
-Input = container.ndarray
-Output = container.ndarray
+Input = container.DataFrame
+Output = container.DataFrame
 
 class SearchNumericParams(params.Params):
      is_fitted: bool
@@ -147,15 +147,15 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      Parameters
      ----------
      inputs : Input
-         A nxd matrix of training data points (dense, no missing values)
+         A nxd DataFrame of training data points (dense, no missing values)
 
      outputs: Output
-         A nx1 numpy array of floats (dense)
+         A nx1 DataFrame of floats (dense)
 
      """
      def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
-         self._ds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
-         self._ds.setOutputForRegression(np.ascontiguousarray(outputs, dtype=float))
+         self._ds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
+         self._ds.setOutputForRegression(np.ascontiguousarray(outputs.values, dtype=float))
          self._fmap = None
          self._fmap_py = None
          self._is_fitted = False
@@ -181,19 +181,19 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      Parameters
      ----------
      inputs : Input
-         A nxd matrix of test data points
+         A nxd DataFrame of test data points
 
      Returns
      -------
      Predict
-         A nx1 array of predictions
+         A nx1 DataFrame of predictions
 
      """
      def produce(self, *, inputs: Input) -> base.CallResult[Output]:
          if self._fmap is None and self._fmap_py is None:
              return None
 
-         testds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
+         testds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
          rows = testds.getSize()
          predictedTargets = np.zeros(rows)
 
@@ -219,4 +219,5 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
              if predicted is False:
                  predictedTargets[j] = self._default_value #clf.predict(testData[j,:])
 
-         return base.CallResult(predictedTargets)
+         output = container.DataFrame(predictedTargets, generate_metadata=False, source=self)
+         return base.CallResult(output)

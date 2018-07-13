@@ -22,8 +22,8 @@ from d3m.metadata import hyperparams, base as metadata_base
 from d3m.metadata import params
 from d3m.primitives.sklearn_wrap import SKRandomForestRegressor
 
-Input = container.ndarray
-Output = container.ndarray
+Input = container.DataFrame
+Output = container.DataFrame
 
 class SearchHybridNumericParams(params.Params):
      is_fitted: bool
@@ -134,9 +134,8 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
      """
      def fit(self, *, timeout: float = None, iterations: int = None) -> None:
          primitive = self.hyperparams['blackbox']
-         idf = container.DataFrame(self._inputs)
-         odf = container.DataFrame(self._outputs)
-         odf.metadata = helper._add_target_semantic_types(metadata=odf.metadata)
+         idf = self._inputs
+         odf = self._outputs
          optimal_cvg = helper.find_optimal_coverage(self, self._ds, idf, odf, primitive, 'REGRESSION')
          self._fmap = self.find_easy_explain_data()
          self._fmap_py = []
@@ -172,15 +171,15 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
      Parameters
      ----------
      inputs : Input
-         A nxd matrix of training data points (dense, no missing values)
+         A nxd DataFrame of training data points (dense, no missing values)
 
      outputs: Output
-         A nx1 numpy array of floats (dense)
+         A nx1 DataFrame of floats (dense)
 
      """
      def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
-         self._ds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
-         self._ds.setOutputForRegression(np.ascontiguousarray(outputs, dtype=float))
+         self._ds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
+         self._ds.setOutputForRegression(np.ascontiguousarray(outputs.values, dtype=float))
 
          self._inputs = inputs
          self._outputs = outputs
@@ -209,24 +208,23 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
      Parameters
      ----------
      inputs : Input
-         A nxd matrix of test data points
+         A nxd DataFrame of test data points
 
      Returns
      -------
      Predict
-         A nx1 array of predictions
+         A nx1 DataFrame of predictions
 
      """
      def produce(self, *, inputs: Input) -> base.CallResult[Output]:
          if self._fmap is None and self._fmap_py is None:
              return None
 
-         testds = datset.Datset(np.ascontiguousarray(inputs, dtype=float))
+         testds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
          rows = testds.getSize()
          predictedTargets = np.zeros(rows)
 
-         idf = container.DataFrame(data=inputs)
-         clfp = self._prim_instance.produce(inputs=idf).value.values
+         clfp = self._prim_instance.produce(inputs=inputs).value.values
 
          # Loop through all the test rows
          for j in range(rows):
@@ -250,4 +248,5 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
              if predicted is False:
                  predictedTargets[j] = clfp[j]
 
-         return base.CallResult(predictedTargets)
+         output = container.DataFrame(predictedTargets, generate_metadata=False, source=self)
+         return base.CallResult(output)

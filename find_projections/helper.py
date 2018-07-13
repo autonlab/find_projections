@@ -12,6 +12,7 @@ import libfind_projections
 from . import feature_map, datset
 import numpy as np
 import typing, sys, os
+import pandas as pd
 
 from d3m import container, utils
 import d3m.metadata
@@ -32,7 +33,7 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
     rows = ds.getSize()
     rowset = [i for i in range(rows)]
 
-    bootstraps = 10
+    bootstraps = 5
     print(primitive)
     primitive_hyperparams = primitive.metadata.query()['primitive_code']['class_type_arguments']['Hyperparams']
     custom_hyperparams = dict()
@@ -47,6 +48,7 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
     import random
 
     prim_instance = primitive(hyperparams=primitive_hyperparams(primitive_hyperparams.defaults(), **custom_hyperparams))
+    idfnew = pd.DataFrame(data=idf.values, columns=idf.columns.values.tolist())
 
     # Do bootstrap experiments
     for b in range(bootstraps):
@@ -57,10 +59,12 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
         ds.ds.set_training_rows(np.ascontiguousarray(train_ids, dtype=float))
         fmap = obj.find_easy_explain_data()
 
-        inputs = idf.iloc[train_ids,:]
+        inputs = container.DataFrame(idfnew.iloc[train_ids,:], generate_metadata=False)
+        inputs.metadata = idf.metadata.clear(for_value=inputs, generate_metadata=True)
         outputs = odf.iloc[train_ids,:]
         outputs.metadata = odf.metadata
-        testdata = idf.iloc[validation_ids,:]
+        testdata = container.DataFrame(idfnew.iloc[validation_ids,:], generate_metadata=False)
+        testdata.metadata = idf.metadata.clear(for_value=testdata, generate_metadata=True)
         to = odf.iloc[validation_ids,:]
 
         prim_instance.set_training_data(inputs=inputs, outputs=outputs)

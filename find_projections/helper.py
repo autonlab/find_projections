@@ -33,7 +33,7 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
     rows = ds.getSize()
     rowset = [i for i in range(rows)]
 
-    bootstraps = 5
+    bootstraps = 2
     print(primitive)
     primitive_hyperparams = primitive.metadata.query()['primitive_code']['class_type_arguments']['Hyperparams']
     custom_hyperparams = dict()

@@ -143,6 +143,7 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
 
          primitive_hyperparams = primitive.metadata.query()['primitive_code']['class_type_arguments']['Hyperparams']
          custom_hyperparams = dict()
+         custom_hyperparams['n_estimators'] = 100
          self._prim_instance = primitive(hyperparams=primitive_hyperparams(primitive_hyperparams.defaults(), **custom_hyperparams))
          self._prim_instance.set_training_data(inputs=idf, outputs=odf)
          self._prim_instance.fit()

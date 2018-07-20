@@ -50,7 +50,7 @@ class projection {
   void set_att2_end(double att2_end) { this->att2_end = att2_end; }
 
   const double get_coverage() { return coverage; }
-  const double set_coverage(double coverage) { this->coverage = coverage; }
+  void set_coverage(double coverage) { this->coverage = coverage; }
 
   std::vector<int> *get_indices() {
     return indices;

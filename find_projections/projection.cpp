@@ -103,6 +103,7 @@ void projection::copy_projection(projection *pr) {
   pr->att1_end = this->att1_end;
   pr->att2_start = this->att2_start;
   pr->att2_end = this->att2_end;
+  pr->coverage = this->coverage;
   pr->indices = NULL;
   if(this->indices)
     pr->indices = new std::vector<int>(*(this->indices));

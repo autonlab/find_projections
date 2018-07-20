@@ -147,16 +147,16 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
          self._prim_instance.set_training_data(inputs=idf, outputs=odf)
          self._prim_instance.fit()
           
-         self._num = 0
+         self._num = -1
          num = self._fmap.get_num_projections()
          for i in range(num):
               pr = self._fmap.get_projection(i)
               cvg = pr.get_coverage()
 
               if cvg > optimal_cvg:
-                  self._num = i
                   break
 
+              self._num = i
               att1 = pr.get_att1()
               att2 = pr.get_att2()
               start1 = pr.get_att1_start()
@@ -235,7 +235,7 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
              predicted = False
              if bool(self._fmap):
                  num = self._num
-                 for i in range(num):
+                 for i in range(num+1):
                      pr = self._fmap.get_projection(i)
                      if pr.point_lies_in_projection(testds.ds, j) is True:
                          predictedTargets[j] = (int)(pr.get_projection_metric())

@@ -20,6 +20,8 @@ import d3m.metadata
 from d3m.metadata import hyperparams, base as metadata_base
 from d3m.metadata import params
 
+from sklearn import preprocessing
+
 Input = container.DataFrame
 Output = container.DataFrame
 
@@ -76,12 +78,13 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          self._fmap_py = None
          self._is_fitted = False
          self._default_value = None
+         self._le = preprocessing.LabelEncoder()
        
      def __getstate__(self):
-         return (self.hyperparams, self._fmap_py, self._default_value, self._is_fitted)
+         return (self.hyperparams, self._fmap_py, self._default_value, self._is_fitted, self._le)
 
      def __setstate__(self, state):
-         self.hyperparams, self._fmap_py, self._default_value, self._is_fitted = state
+         self.hyperparams, self._fmap_py, self._default_value, self._is_fitted, self._le = state
          self._fmap = None
 
      """
@@ -155,7 +158,8 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
      """
      def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
          self._ds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
-         self._ds.setOutputForClassification(np.ascontiguousarray(outputs.values, dtype=float))
+         v = self._le.fit_transform(outputs.values.ravel())         
+         self._ds.setOutputForClassification(np.ascontiguousarray(v, dtype=float))
          
          self._fmap = None
          self._fmap_py = None
@@ -220,5 +224,14 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
              if predicted is False:
                  predictedTargets[j] = (int)(self._default_value) #clf.predict(testData[j,:])
 
-         output = container.DataFrame(predictedTargets, generate_metadata=False, source=self)
+         predictedTargetNames = self._le.inverse_transform(predictedTargets)
+         output = container.DataFrame(predictedTargetNames, generate_metadata=False, source=self)
          return base.CallResult(output)
+
+     def multi_produce(self, *, produce_methods: typing.Sequence[str], inputs: Input, timeout: float = None,
+                       iterations: int = None) -> base.MultiCallResult:
+         output = self.produce(inputs=inputs)
+         result = {}
+         for method in produce_methods:
+             result[method] = output.value
+         return base.MultiCallResult(result)

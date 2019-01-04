@@ -22,6 +22,9 @@ from d3m.metadata import hyperparams, base as metadata_base
 from d3m.metadata import params
 from d3m.primitives.sklearn_wrap import SKRandomForestClassifier
 
+from sklearn import preprocessing
+import pandas as pd
+
 Input = container.DataFrame
 Output = container.DataFrame
 
@@ -83,12 +86,13 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
          self._outputs = None
          self._num = None
          self._prim_instance = None
+         self._le = preprocessing.LabelEncoder()
        
      def __getstate__(self):
-         return (self.hyperparams, self._fmap_py, self._default_value, self._num, self._prim_instance, self._is_fitted)
+         return (self.hyperparams, self._fmap_py, self._default_value, self._num, self._prim_instance, self._is_fitted, self._le)
 
      def __setstate__(self, state):
-         self.hyperparams, self._fmap_py, self._default_value, self._num, self._prim_instance, self._is_fitted = state
+         self.hyperparams, self._fmap_py, self._default_value, self._num, self._prim_instance, self._is_fitted, self._le = state
          self._fmap = None
 
      """
@@ -136,7 +140,7 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
      def fit(self, *, timeout: float = None, iterations: int = None) -> None:
          primitive = self.hyperparams['blackbox']
          idf = self._inputs
-         odf = self._outputs
+         odf = pd.DataFrame(self._outputs)
          optimal_cvg = helper.find_optimal_coverage(self, self._ds, idf, odf, primitive, 'CLASSIFICATION')
          self._fmap = self.find_easy_explain_data()
          self._fmap_py = []
@@ -181,10 +185,11 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
      """
      def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
          self._ds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
-         self._ds.setOutputForClassification(np.ascontiguousarray(outputs.values, dtype=float))
+         v = self._le.fit_transform(outputs.values.ravel())
+         self._ds.setOutputForClassification(np.ascontiguousarray(v, dtype=float))
 
          self._inputs = inputs
-         self._outputs = outputs
+         self._outputs = v
          
          self._fmap = None
          self._fmap_py = None
@@ -251,5 +256,14 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
              if predicted is False:
                  predictedTargets[j] = (int)(clfp[j])
 
-         output = container.DataFrame(predictedTargets, generate_metadata=False, source=self)
+         predictedTargetNames = self._le.inverse_transform(predictedTargets)
+         output = container.DataFrame(predictedTargetNames, generate_metadata=False, source=self)
          return base.CallResult(output)
+
+     def multi_produce(self, *, produce_methods: typing.Sequence[str], inputs: Input, timeout: float = None,
+                       iterations: int = None) -> base.MultiCallResult:
+         output = self.produce(inputs=inputs)
+         result = {}
+         for method in produce_methods:
+             result[method] = output.value
+         return base.MultiCallResult(result)

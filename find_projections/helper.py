@@ -63,7 +63,6 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
         inputs = container.DataFrame(idfnew.iloc[train_ids,:], generate_metadata=False)
         inputs.metadata = idf.metadata.clear(for_value=inputs, generate_metadata=True)
         outputs = odf.iloc[train_ids,:]
-        outputs.metadata = odf.metadata
         testdata = container.DataFrame(idfnew.iloc[validation_ids,:], generate_metadata=False)
         testdata.metadata = idf.metadata.clear(for_value=testdata, generate_metadata=True)
         to = odf.iloc[validation_ids,:]

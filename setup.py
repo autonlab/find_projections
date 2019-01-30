@@ -12,7 +12,7 @@ if user_site_packages_folder not in sys.path:
 import numpy as np
 
 NAME = 'find_projections'
-VERSION = '1.0'
+VERSION = '2.1.0'
 
 REQUIRES = ['numpy >= 1.13']
 
@@ -35,10 +35,10 @@ setup(
         packages = ['find_projections'],
         entry_points = {
             'd3m.primitives': [
-                'cmu.autonlab.find_projections.Search = find_projections:Search',
-                'cmu.autonlab.find_projections.SearchNumeric = find_projections:SearchNumeric',
-                'cmu.autonlab.find_projections.SearchHybrid = find_projections:SearchHybrid',
-                'cmu.autonlab.find_projections.SearchHybridNumeric = find_projections:SearchHybridNumeric',
+                'classification.search.Find_projections = find_projections:Search',
+                'regression.search_numeric.Find_projections = find_projections:SearchNumeric',
+                'classification.search_hybrid.Find_projections = find_projections:SearchHybrid',
+                'regression.search_hybrid_numeric.Find_projections = find_projections:SearchHybridNumeric',
             ]
         }
 )

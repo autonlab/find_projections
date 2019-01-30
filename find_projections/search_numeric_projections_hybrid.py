@@ -20,7 +20,7 @@ import d3m.metadata
 from d3m.metadata.base import PrimitiveFamily
 from d3m.metadata import hyperparams, base as metadata_base
 from d3m.metadata import params
-from d3m.primitives.sklearn_wrap import SKRandomForestRegressor
+from d3m.primitives.regression.random_forest import SKlearn as SKRandomForestRegressor
 
 Input = container.DataFrame
 Output = container.DataFrame
@@ -44,15 +44,16 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
 
      metadata = metadata_base.PrimitiveMetadata({
          "id": "2a581b8d-baf0-4278-842e-082b796f3edd",
-         "version": "2.0",
+         "version": "2.1.0",
          "name": "find projections",
          "description": "Searching 2-dimensional projection boxes in raw data separating out homogeneous data points",
-         "python_path": "d3m.primitives.cmu.autonlab.find_projections.SearchHybridNumeric",
+         "python_path": "d3m.primitives.regression.search_hybrid_numeric.Find_projections",
          "primitive_family": "REGRESSION",
          "algorithm_types": [ "ASSOCIATION_RULE_LEARNING", "DECISION_TREE" ],
          "keywords": ["regression", "rule learning"],
          "source": {
              "name": "CMU",
+             "contact": "mailto:sray@cs.cmu.edu",
              "uris": [ "https://gitlab.datadrivendiscovery.org/sray/find_projections.git" ]
          },
          "precondition": [ metadata_base.PrimitivePrecondition.NO_CATEGORICAL_VALUES ],

@@ -43,15 +43,16 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
 
      metadata = metadata_base.PrimitiveMetadata({
          "id": "84f39131-6618-4d90-9590-b79d41dfb093",
-         "version": "2.0",
+         "version": "2.1.0",
          "name": "find projections",
          "description": "Searching 2-dimensional projection boxes in raw data separating out homogeneous data points",
-         "python_path": "d3m.primitives.cmu.autonlab.find_projections.Search",
+         "python_path": "d3m.primitives.classification.search.Find_projections",
          "primitive_family": "CLASSIFICATION",
          "algorithm_types": [ "ASSOCIATION_RULE_LEARNING", "DECISION_TREE" ],
          "keywords": ["classification", "rule learning"],
          "source": {
              "name": "CMU",
+             "contact": "mailto:sray@cs.cmu.edu",
              "uris": [ "https://gitlab.datadrivendiscovery.org/sray/find_projections.git" ]
          },
          "precondition": [ metadata_base.PrimitivePrecondition.NO_CATEGORICAL_VALUES ],

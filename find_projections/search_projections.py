@@ -196,7 +196,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          A nx1 DataFrame of predictions
 
      """
-     def produce(self, *, inputs: Input) -> base.CallResult[Output]:
+     def produce(self, *, inputs: Input, timeout: float = None, iterations: int = None) -> base.CallResult[Output]:
          if self._fmap is None and self._fmap_py is None:
              return None
 
@@ -229,11 +229,3 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          predictedTargetNames = self._le.inverse_transform(predictedTargets)
          output = container.DataFrame(predictedTargetNames, generate_metadata=False, source=self)
          return base.CallResult(output)
-
-     def multi_produce(self, *, produce_methods: typing.Sequence[str], inputs: Input, timeout: float = None,
-                       iterations: int = None) -> base.MultiCallResult:
-         output = self.produce(inputs=inputs)
-         result = {}
-         for method in produce_methods:
-             result[method] = output.value
-         return base.MultiCallResult(result)

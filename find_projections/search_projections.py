@@ -130,7 +130,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
      """
      Learns decision list of projection boxes for easy-to-explain data (for classification)
      """
-     def fit(self, *, timeout: float = None, iterations: int = None) -> None:
+     def fit(self, *, timeout: float = None, iterations: int = None) -> base.CallResult[None]:
          self._fmap = self.find_easy_explain_data()
          self._fmap_py = []
          num = self._fmap.get_num_projections()
@@ -144,7 +144,8 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
               end2 = pr.get_att2_end()
               value = pr.get_projection_metric()
               self._fmap_py.append((att1, att2, start1, start2, end1, end2, value,))
-         self._is_fitted = True 
+         self._is_fitted = True
+         return base.CallResult(None)
 
      """
      Sets input and output feature space.

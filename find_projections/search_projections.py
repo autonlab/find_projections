@@ -158,7 +158,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          A nx1 DataFrame of floats (dense)
 
      """
-     def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
+     def set_training_data(self, *, inputs: Input, outputs: Output) -> base.CallResult[None]:
          self._ds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
          v = self._le.fit_transform(outputs.values.ravel())         
          self._ds.setOutputForClassification(np.ascontiguousarray(v, dtype=float))
@@ -167,6 +167,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          self._fmap_py = None
          self._is_fitted = False
          self._default_value = self._ds.get_default_value()
+         return base.CallResult(None)
 
      """
      Returns all the search parameters in Params object
@@ -180,9 +181,10 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
      :type: boolean
      :type: Double
      """
-     def set_params(self, *, params: SearchParams) -> None:
+     def set_params(self, *, params: SearchParams) -> base.CallResult[None]:
          self._is_fitted = params['is_fitted']
-         
+         return base.CallResult(None)
+
      """
      Returns predictions made on test data from prior saved list of projections.
      Parameters
@@ -198,7 +200,8 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
      """
      def produce(self, *, inputs: Input, timeout: float = None, iterations: int = None) -> base.CallResult[Output]:
          if self._fmap is None and self._fmap_py is None:
-             return None
+             return base.CallResult(None)  # TODO `produce` should never return `None` but just abort if it cannot
+                                           # run; throw an exception or something
 
          testds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
          rows = testds.getSize()

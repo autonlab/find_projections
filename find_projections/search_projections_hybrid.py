@@ -138,7 +138,7 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
      """
      Learns decision list of projection boxes for easy-to-explain data (for classification)
      """
-     def fit(self, *, timeout: float = None, iterations: int = None) -> None:
+     def fit(self, *, timeout: float = None, iterations: int = None) -> base.CallResult[None]:
          primitive = self.hyperparams['blackbox']
          idf = self._inputs
          odf = pd.DataFrame(self._outputs)
@@ -171,7 +171,8 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
               end2 = pr.get_att2_end()
               value = pr.get_projection_metric()
               self._fmap_py.append((att1, att2, start1, start2, end1, end2, value,))
-         self._is_fitted = True 
+         self._is_fitted = True
+         return base.CallResult(None)
 
      """
      Sets input and output feature space.
@@ -225,9 +226,10 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
          A nx1 DataFrame of predictions
 
      """
-     def produce(self, *, inputs: Input) -> base.CallResult[Output]:
+     def produce(self, *, inputs: Input, timeout: float = None, iterations: int = None) -> base.CallResult[Output]:
          if self._fmap is None and self._fmap_py is None:
-             return None
+             return base.CallResult(None)  # TODO `produce` should never return `None` but just abort if it cannot
+                                           # run; throw an exception or something
 
          testds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
          rows = testds.getSize()

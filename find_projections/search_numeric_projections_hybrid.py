@@ -254,12 +254,3 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
 
          output = container.DataFrame(predictedTargets, generate_metadata=False, source=self)
          return base.CallResult(output)
-
-     def multi_produce(self, *, produce_methods: typing.Sequence[str], inputs: Input, timeout: float = None,
-                       iterations: int = None) -> base.MultiCallResult:
-         output = self.produce(inputs=inputs)
-         result = {}
-         for method in produce_methods:
-             result[method] = output.value
-         return base.MultiCallResult(result)
-

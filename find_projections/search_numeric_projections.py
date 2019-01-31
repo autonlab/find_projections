@@ -127,7 +127,7 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      """
      Learns decision list of projection boxes for easy-to-explain data (for classification/regression)
      """
-     def fit(self, *, timeout: float = None, iterations: int = None) -> base.CallResult[None]:
+     def fit(self, *, timeout: float = None, iterations: int = None) -> None:
          self._fmap = self.find_easy_explain_data() 
          self._fmap_py = []
          num = self._fmap.get_num_projections()
@@ -142,7 +142,6 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
               value = pr.get_projection_metric()
               self._fmap_py.append((att1, att2, start1, start2, end1, end2, value,))
          self._is_fitted = True
-         return base.CallResult[None]
            
      """
      Sets input and output feature space.
@@ -155,14 +154,13 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
          A nx1 DataFrame of floats (dense)
 
      """
-     def set_training_data(self, *, inputs: Input, outputs: Output) -> base.CallResult[None]:
+     def set_training_data(self, *, inputs: Input, outputs: Output) -> None:
          self._ds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
          self._ds.setOutputForRegression(np.ascontiguousarray(outputs.values, dtype=float))
          self._fmap = None
          self._fmap_py = None
          self._is_fitted = False
          self._default_value = self._ds.get_default_value()
-         return base.CallResult[None]
 
      """
      Returns all the search parameters in Params object
@@ -176,9 +174,8 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      :type: boolean
      :type: Double
      """
-     def set_params(self, *, params: SearchNumericParams) -> base.CallResult[None]:
+     def set_params(self, *, params: SearchNumericParams) -> None:
          self._is_fitted = params['is_fitted']
-         return base.CallResult[None]
 
      """
      Returns predictions made on test data from prior saved list of projections.
@@ -193,10 +190,9 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
          A nx1 DataFrame of predictions
 
      """
-     def produce(self, *, inputs: Input, timeout: float = None, iterations: int = None) -> base.CallResult[Output]:
+     def produce(self, *, inputs: Input) -> base.CallResult[Output]:
          if self._fmap is None and self._fmap_py is None:
-             return base.CallResult(None)  # TODO `produce` should never return `None` but just abort if it cannot
-             # run; throw an exception or something
+             return None
 
          testds = datset.Datset(np.ascontiguousarray(inputs.values, dtype=float))
          rows = testds.getSize()

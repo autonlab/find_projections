@@ -48,7 +48,10 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
     from scipy import stats
     import random
 
-    prim_instance = primitive
+    if isinstance(primitive, d3m.primitive_interfaces.base.PrimitiveBaseMeta):  # is a class
+        prim_instance = primitive(hyperparams=primitive_hyperparams(primitive_hyperparams.defaults(), **custom_hyperparams))
+    else:  # is an instance
+        prim_instance = primitive
     idfnew = pd.DataFrame(data=idf.values, columns=idf.columns.values.tolist())
 
     # Do bootstrap experiments

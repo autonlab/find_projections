@@ -141,7 +141,7 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
      def fit(self, *, timeout: float = None, iterations: int = None) -> base.CallResult[None]:
          primitive = self.hyperparams['blackbox']
          idf = self._inputs
-         odf = pd.DataFrame(self._outputs)
+         odf = container.DataFrame(self._outputs)
          optimal_cvg = helper.find_optimal_coverage(self, self._ds, idf, odf, primitive, 'CLASSIFICATION')
          self._fmap = self.find_easy_explain_data()
          self._fmap_py = []

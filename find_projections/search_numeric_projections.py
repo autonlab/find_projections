@@ -57,7 +57,8 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
          "installation": [
          {         
              "type": "UBUNTU",
-             "package": "libboost-python-dev",
+             "package": "libboost-python1.65-dev",
+             "version": "1.65.1"
          },
          {
              "type": "PIP",

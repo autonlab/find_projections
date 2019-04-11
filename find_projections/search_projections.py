@@ -59,7 +59,8 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
          "installation": [
          {   
              "type": "UBUNTU",
-             "package": "libboost-python-dev",
+             "package": "libboost-python1.65-dev",
+             "version": "1.65.1"
          },
          {
              "type": "PIP",

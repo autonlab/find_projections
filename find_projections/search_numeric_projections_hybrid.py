@@ -255,5 +255,5 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
              if predicted is False:
                  predictedTargets[j] = clfp[j]
 
-         output = container.DataFrame(predictedTargets, generate_metadata=False, source=self)
+         output = container.DataFrame(predictedTargets, generate_metadata=True, source=self)
          return base.CallResult(output)

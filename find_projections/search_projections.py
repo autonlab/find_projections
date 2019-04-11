@@ -230,5 +230,5 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
                  predictedTargets[j] = (int)(self._default_value) #clf.predict(testData[j,:])
 
          predictedTargetNames = self._le.inverse_transform(predictedTargets)
-         output = container.DataFrame(predictedTargetNames, generate_metadata=False, source=self)
+         output = container.DataFrame(predictedTargetNames, generate_metadata=True, source=self)
          return base.CallResult(output)

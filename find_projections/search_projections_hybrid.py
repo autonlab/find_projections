@@ -263,5 +263,5 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
                  predictedTargets[j] = (int)(clfp[j])
 
          predictedTargetNames = self._le.inverse_transform(predictedTargets)
-         output = container.DataFrame(predictedTargetNames, generate_metadata=False, source=self)
+         output = container.DataFrame(predictedTargetNames, generate_metadata=True, source=self)
          return base.CallResult(output)

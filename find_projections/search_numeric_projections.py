@@ -41,7 +41,7 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
 
      metadata = metadata_base.PrimitiveMetadata({
          "id": "fbc8d328-a553-4289-a21c-b1407a21a900",
-         "version": "2.1.0",
+         "version": "2.2.0",
          "name": "find projections numeric",
          "description": "Searching 2-dimensional projection boxes in raw data separating out homogeneous data points",
          "python_path": "d3m.primitives.regression.search_numeric.Find_projections",

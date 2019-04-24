@@ -47,7 +47,7 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
 
      metadata = metadata_base.PrimitiveMetadata({
          "id": "448590e7-8cf6-4bfd-abc4-db2980d8114e",
-         "version": "2.1.0",
+         "version": "2.2.0",
          "name": "find projections",
          "description": "Searching 2-dimensional projection boxes in raw data separating out homogeneous data points",
          "python_path": "d3m.primitives.classification.search_hybrid.Find_projections",

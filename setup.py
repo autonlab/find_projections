@@ -12,7 +12,7 @@ if user_site_packages_folder not in sys.path:
 import numpy as np
 
 NAME = 'find_projections'
-VERSION = '2.1.0'
+VERSION = '2.2.0'
 
 REQUIRES = ['numpy >= 1.13']
 

@@ -43,7 +43,7 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
 
      metadata = metadata_base.PrimitiveMetadata({
          "id": "84f39131-6618-4d90-9590-b79d41dfb093",
-         "version": "2.1.0",
+         "version": "2.2.0",
          "name": "find projections",
          "description": "Searching 2-dimensional projection boxes in raw data separating out homogeneous data points",
          "python_path": "d3m.primitives.classification.search.Find_projections",

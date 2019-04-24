@@ -65,7 +65,7 @@ class SearchHybridNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchHy
          },
          {
              "type": "PIP",
-             "package_uri": 'git+https://github.com:autonlab/find_projections.git@{git_commit}#egg=find_projections'.format(
+             "package_uri": 'git+https://github.com/autonlab/find_projections.git@{git_commit}#egg=find_projections'.format(
                  git_commit=utils.current_git_commit(os.path.dirname(__file__)))
          }
          ]

@@ -64,10 +64,10 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
         fmap = obj.find_easy_explain_data()
 
         inputs = container.DataFrame(idfnew.iloc[train_ids,:], generate_metadata=False)
-        inputs.metadata = idf.metadata.clear(for_value=inputs, generate_metadata=True)
+        inputs.metadata = metadata_base.DataMetadata().generate(value=inputs)
         outputs = odf.iloc[train_ids,:]
         testdata = container.DataFrame(idfnew.iloc[validation_ids,:], generate_metadata=False)
-        testdata.metadata = idf.metadata.clear(for_value=testdata, generate_metadata=True)
+        testdata.metadata = metadata_base.DataMetadata().generate(value=testdata)
         to = odf.iloc[validation_ids,:]
 
         prim_instance.set_training_data(inputs=inputs, outputs=outputs)

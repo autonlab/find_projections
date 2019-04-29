@@ -221,5 +221,5 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
              if predicted is False:
                  predictedTargets[j] = self._default_value #clf.predict(testData[j,:])
 
-         output = container.DataFrame(predictedTargets, generate_metadata=True, source=self)
+         output = container.DataFrame(predictedTargets, generate_metadata=True)
          return base.CallResult(output)

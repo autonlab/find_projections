@@ -33,7 +33,7 @@ class Datset:
      Set output array for classification task
      """
      def setOutputForClassification(self, output):
-         if ( np.issubdtype(output.dtype, np.float ) ) :
+         if ( np.issubdtype(output.dtype, np.floating ) ) :
             self.ds.fill_datset_output_for_classification(output)
          else:
             raise Exception("Invalid classification data type")
@@ -42,7 +42,7 @@ class Datset:
      Set output array for regression task
      """
      def setOutputForRegression(self, output):
-         if ( np.issubdtype(output.dtype, np.float ) ) :
+         if ( np.issubdtype(output.dtype, np.floating ) ) :
             self.ds.fill_datset_output_for_regression(output)
          else:
             raise Exception("Invalid regressionion data type")

@@ -1,8 +1,8 @@
-from setuptools import setup
+import os
+import sys
 from distutils.core import Extension
-import os, sys
 
-import pip
+from setuptools import setup
 
 home_folder = os.path.expanduser("~")
 user_site_packages_folder = "{0}/.local/lib/python{1}.{2}/site-packages".format(home_folder, sys.version_info[0],

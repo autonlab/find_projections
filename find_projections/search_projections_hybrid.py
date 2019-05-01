@@ -8,22 +8,21 @@
 # Copyright (c) 2016 Carnegie Mellon University
 ##
 
-import libfind_projections
-from . import feature_map, datset, helper
-import numpy as np
-import typing, sys, os
+import os
 
-from d3m.primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
-from d3m.primitive_interfaces import base
-from d3m import container, utils
 import d3m.metadata
-from d3m.metadata.base import PrimitiveFamily
+import libfind_projections
+import numpy as np
+from d3m import container, utils
 from d3m.metadata import hyperparams, base as metadata_base
 from d3m.metadata import params
+from d3m.metadata.base import PrimitiveFamily
+from d3m.primitive_interfaces import base
+from d3m.primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
 from d3m.primitives.classification.random_forest import SKlearn as SKRandomForestClassifier
-
 from sklearn import preprocessing
-import pandas as pd
+
+from . import feature_map, datset, helper
 
 Input = container.DataFrame
 Output = container.DataFrame

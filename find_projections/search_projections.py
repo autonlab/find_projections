@@ -8,19 +8,18 @@
 # Copyright (c) 2016 Carnegie Mellon University
 ##
 
-import libfind_projections
-from . import feature_map, datset
-import numpy as np
-import typing, sys, os
+import os
 
-from d3m.primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
-from d3m.primitive_interfaces import base
+import libfind_projections
+import numpy as np
 from d3m import container, utils
-import d3m.metadata
 from d3m.metadata import hyperparams, base as metadata_base
 from d3m.metadata import params
-
+from d3m.primitive_interfaces import base
+from d3m.primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
 from sklearn import preprocessing
+
+from . import feature_map, datset
 
 Input = container.DataFrame
 Output = container.DataFrame

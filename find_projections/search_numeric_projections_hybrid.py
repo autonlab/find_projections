@@ -19,7 +19,8 @@ from d3m.metadata import params
 from d3m.metadata.base import PrimitiveFamily
 from d3m.primitive_interfaces import base
 from d3m.primitive_interfaces.supervised_learning import SupervisedLearnerPrimitiveBase
-from d3m.primitives.regression.random_forest import SKlearn as SKRandomForestRegressor
+# from d3m.primitives.regression.random_forest import SKlearn as SKRandomForestRegressor
+from d3m.primitives.regression.gradient_boosting import SKlearn as GradientBoostingRegressor
 
 from . import feature_map, datset, helper
 
@@ -50,7 +51,7 @@ class SearchHybridNumericHyperparams(hyperparams.Hyperparams):
         'https://metadata.datadrivendiscovery.org/types/ControlParameter'],
                                           description='Proportion of training data which is held out for validation '
                                                       'purposes.')
-    blackbox = hyperparams.Primitive(primitive_families=[PrimitiveFamily.REGRESSION], default=SKRandomForestRegressor,
+    blackbox = hyperparams.Primitive(primitive_families=[PrimitiveFamily.REGRESSION], default=GradientBoostingRegressor,
                                      semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],
                                      description='Black box model to fall back after decision list.')
 

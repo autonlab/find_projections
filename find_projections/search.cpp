@@ -654,9 +654,9 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
     delete ftree;
   } while(pr && tcount < train_rows->size());
 
+  #ifdef DEBUG
   printf("easy data explained = %u / %lu (%f)\n\n", tcount, train_rows->size(), (double)tcount/(double)(train_rows->size()));
 
-  #ifdef DEBUG
   projection::print_decision_list(pr_array, ds, proportions, is_numeric_problem);
   #endif
 

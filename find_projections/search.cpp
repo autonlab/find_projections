@@ -628,7 +628,9 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
     } // End loop for i
 
     if(pr) { //Found best projection
+      #ifdef DEBUG
       pr->pprojection();
+      #endif
       pr->mk_projection_indices(ds, *train_rows, *ia);
 
       projection *dp = NULL;
@@ -764,7 +766,9 @@ void search::find_nuggets_in_projection(Datset& ds, std::vector<int> &train_rows
     if(!bestprojection)
       break;
     
+    #ifdef DEBUG
     bestprojection->pprojection();
+    #endif
     discrete_projection *bp = (discrete_projection *)bestprojection;
     neg -= bp->get_pos();
     printf("Left with %d pos and %d neg\n", pos, neg);
@@ -829,7 +833,9 @@ void search::find_class_nuggets(Datset& ds, int bin_size, int support, double pu
     }
 
     if(pr) {
+      #ifdef DEBUG
       pr->pprojection();
+      #endif
       pr->mk_projection_indices(ds, train_rows, *ia);
       delete ia;
       indices_array *newia = remove_projection(*ia, pr);

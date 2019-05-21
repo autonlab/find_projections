@@ -25,7 +25,9 @@
 static indices_array *remove_projection(indices_array &ia, projection *pr);
 
 static bool validate_params(Datset &ds, int bin_size,int support, double purity_threshold, int num_threads, int mode) {
+  #ifdef DEBUG
   printf("binsize = %d, support =  %d, purity =  %f, num_threads = %d, mode = %d\n", bin_size, support, purity_threshold, num_threads, mode);
+  #endif
   
   if(ds.is_valid() == false) {
     printf("Invalid dataset / label column\n");
@@ -568,7 +570,9 @@ projection_array *search::find_easy_explain_data(Datset& ds, double val_prop, in
   std::vector<int> *train_rows = Helper::get_vector_subset(seq, 0, train_prop);
   std::vector<int> *val_rows = Helper::get_vector_subset(seq, train_prop, rows);
 
+  #ifdef DEBUG
   printf("No. of train rows = %lu, val rows = %lu\n", train_rows->size(), val_rows->size());
+  #endif
 
   projection *pr = NULL;
   indices_array *ia = Helper::mk_indices_array_sorted_values(ds, *train_rows);

@@ -8,17 +8,14 @@
 # Copyright (c) 2018 Carnegie Mellon University
 ##
 
-import libfind_projections
-from . import feature_map, datset
-import numpy as np
-import typing, sys, os
-import pandas as pd
+import logging
 
-from d3m import container, utils
 import d3m.metadata
-from d3m.metadata.base import PrimitiveFamily
-from d3m.metadata import hyperparams, base as metadata_base
-from d3m.metadata import params
+import numpy as np
+import pandas as pd
+from d3m import container
+from d3m.metadata import base as metadata_base
+
 
 def _add_target_semantic_types(metadata) -> metadata_base.DataMetadata:
     for column_index in range(metadata.query((metadata_base.ALL_ELEMENTS,))['dimension']['length']):
@@ -78,7 +75,7 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
             baseline_accuracy = metrics.accuracy_score(to, predictions)
         else:
             baseline_accuracy = metrics.mean_squared_error(to, predictions)
-        print(baseline_accuracy)
+        logging.info(baseline_accuracy)
         baseline_accuracies.append(baseline_accuracy)
 
         num = fmap.get_num_projections()
@@ -129,10 +126,10 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
             if i < len(acc):
                 gacc.append(acc[i])
                 gcvg.append(cvg[i])
-        
-        print("len ", i)
-        print("gacc ", gacc)
-        print("gcvg ", gcvg)
+
+        logging.info("len ", i)
+        logging.info("gacc ", gacc)
+        logging.info("gcvg ", gcvg)
         # Computing upper bounds
         if len(gacc) == 1:
             hybrid_accuracies.append(gacc[0])
@@ -156,5 +153,5 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
     if index >= 0:
         optimal_cvg = hybrid_coverages[index]
 
-    print("optimal: ", optimal_cvg)
+    logging.info("optimal: ", optimal_cvg)
     return optimal_cvg

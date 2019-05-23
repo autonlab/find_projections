@@ -51,9 +51,11 @@ class SearchHybridNumericHyperparams(hyperparams.Hyperparams):
         'https://metadata.datadrivendiscovery.org/types/ControlParameter'],
                                           description='Proportion of training data which is held out for validation '
                                                       'purposes.')
-    blackbox = hyperparams.Primitive(primitive_families=[PrimitiveFamily.REGRESSION], default=GradientBoostingRegressor,
-                                     semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],
-                                     description='Black box model to fall back after decision list.')
+    blackbox = hyperparams.Primitive[SupervisedLearnerPrimitiveBase](
+        primitive_families=[PrimitiveFamily.REGRESSION],
+        default=GradientBoostingRegressor,
+        semantic_types=['https://metadata.datadrivendiscovery.org/types/TuningParameter'],
+        description='Black box model to fall back after decision list.')
 
 
 class SearchHybridNumeric(

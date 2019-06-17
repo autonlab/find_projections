@@ -127,9 +127,9 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
                 gacc.append(acc[i])
                 gcvg.append(cvg[i])
 
-        logging.info("len ", i)
-        logging.info("gacc ", gacc)
-        logging.info("gcvg ", gcvg)
+        logging.info("len {}".format(i))
+        logging.info("gacc {}".format(gacc))
+        logging.info("gcvg {}".format(gcvg))
         # Computing upper bounds
         if len(gacc) == 1:
             hybrid_accuracies.append(gacc[0])
@@ -153,5 +153,5 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
     if index >= 0:
         optimal_cvg = hybrid_coverages[index]
 
-    logging.info("optimal: ", optimal_cvg)
+    logging.info("optimal: {}".format(optimal_cvg))
     return optimal_cvg

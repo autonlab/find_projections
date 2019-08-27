@@ -51,3 +51,23 @@ rank.py - Functions for sorting output by purity or support used to identify mos
 utils.py - Functions for manipulating raw datasets
 
 viz.py - Functions for visualizing projection output as boxes in 2D space
+
+Installation
+-----------------------------
+Prerequisites:
+* GCC 5.2+
+* pthread
+* libboost-python-3.6 
+
+We recommend using a python virtual env.
+```bash
+# create a new env using conda
+conda create --name d3m python=3.6
+
+# activate the env
+conda activate d3m
+
+pip install -r requirements
+
+pip install -e .
+```

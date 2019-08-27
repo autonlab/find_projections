@@ -1,0 +1,2 @@
+d3m==2019.6.7
+git+https://gitlab.com/datadrivendiscovery/sklearn-wrap.git@dist#egg=sklearn_wrap

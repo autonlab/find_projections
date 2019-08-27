@@ -10,10 +10,6 @@ This package has been written in C++ with Python wrapper (Python 3.6+).
 Uses boost ver. 1.65.
 Uses pthreads for multi-threading support.
 
-Run the following command for building and installing package-
-
-python setup.py install
-
 In python,
 import find_projections.
 

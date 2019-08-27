@@ -71,3 +71,14 @@ pip install -r requirements
 
 pip install -e .
 ```
+
+### Building error: ld: cannot find lboost_python-py36
+This error is caused by boost library. You can fix this by running
+```bash
+conda install boost==1.70
+conda install numpy==1.15.4
+
+# create a symlink to libboost_python36.so
+cd $CONDA_PREFIX/lib
+ln -s libboost_python36.so libboost_python-py36.so 
+```

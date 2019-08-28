@@ -57,15 +57,21 @@ Prerequisites:
 
 We recommend using a python virtual env.
 ```bash
-# create a new env using conda
+# Create a new env using conda
 conda create --name d3m python=3.6
 
-# activate the env
+# Activate the env
 conda activate d3m
 
-pip install -r requirements
+# Install dependencies
+pip install -r requirements.txt
 
-pip install -e .
+# Install extra dependencies
+# it will create a new folder `src` in the current directory
+pip install -U -e git+https://gitlab.com/datadrivendiscovery/sklearn-wrap.git@dist#egg=sklearn_wrap
+
+# Install find_projection
+pip install -U -e .
 ```
 
 ### Building error: ld: cannot find lboost_python-py36

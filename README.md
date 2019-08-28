@@ -63,6 +63,9 @@ conda create --name d3m python=3.6
 # Activate the env
 conda activate d3m
 
+# Install libcurl
+conda install libcurl
+
 # Install dependencies
 pip install -r requirements.txt
 

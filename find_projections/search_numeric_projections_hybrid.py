@@ -68,7 +68,7 @@ class SearchHybridNumeric(
 
     metadata = metadata_base.PrimitiveMetadata({
         "id": "2a581b8d-baf0-4278-842e-082b796f3edd",
-        "version": "2.2.1",
+        "version": "2.3.1",
         "name": "find projections",
         "description": "Searching 2-dimensional projection boxes in raw data separating out homogeneous data points",
         "python_path": "d3m.primitives.regression.search_hybrid_numeric.Find_projections",

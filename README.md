@@ -81,7 +81,7 @@ pip install -U -e .
 The linker failed to link with the boost python library. You can fix this by running
 ```bash
 conda install boost==1.70
-conda install numpy==1.15.4
+conda install numpy==1.18.2
 
 # create a symlink to libboost_python36.so
 cd $CONDA_PREFIX/lib

@@ -174,7 +174,8 @@ class SearchHybridNumeric(
         primitive = self.hyperparams['blackbox']
         idf = self._inputs
         odf = self._outputs
-        optimal_cvg = helper.find_optimal_coverage(self, self._ds, idf, odf, primitive, 'REGRESSION')
+        optimal_cvg = helper.find_optimal_coverage(self, self._ds, idf, odf, primitive, 'REGRESSION',
+                                                   random_seed=self.random_seed)
         self._fmap = self.find_easy_explain_data()
         self._fmap_py = []
 

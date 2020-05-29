@@ -26,7 +26,7 @@ def _add_target_semantic_types(metadata) -> metadata_base.DataMetadata:
 
     return metadata
 
-def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
+def find_optimal_coverage(obj, ds, idf, odf, primitive, name, random_seed=None) -> int:
     rows = ds.getSize()
     rowset = [i for i in range(rows)]
 
@@ -43,7 +43,7 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
          
     from sklearn import metrics
     from scipy import stats
-    import random
+    random_generator = np.random.default_rng(seed=random_seed)
 
     if isinstance(primitive, d3m.primitive_interfaces.base.PrimitiveBaseMeta):  # is a class
         prim_instance = primitive(hyperparams=primitive_hyperparams(primitive_hyperparams.defaults(), **custom_hyperparams))
@@ -53,7 +53,7 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name) -> int:
 
     # Do bootstrap experiments
     for b in range(bootstraps):
-        random.shuffle(rowset)
+        random_generator.shuffle(rowset)
         train_ids = rowset[0:int(rows*0.8)]
         validation_ids = rowset[int(rows*0.8):]
          

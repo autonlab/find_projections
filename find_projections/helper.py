@@ -8,8 +8,6 @@
 # Copyright (c) 2018 Carnegie Mellon University
 ##
 
-import logging
-
 import d3m.metadata
 import numpy as np
 import pandas as pd
@@ -75,7 +73,6 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name, random_seed=None) 
             baseline_accuracy = metrics.accuracy_score(to, predictions)
         else:
             baseline_accuracy = metrics.mean_squared_error(to, predictions)
-        logging.info(baseline_accuracy)
         baseline_accuracies.append(baseline_accuracy)
 
         num = fmap.get_num_projections()
@@ -127,9 +124,6 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name, random_seed=None) 
                 gacc.append(acc[i])
                 gcvg.append(cvg[i])
 
-        logging.info("len {}".format(i))
-        logging.info("gacc {}".format(gacc))
-        logging.info("gcvg {}".format(gcvg))
         # Computing upper bounds
         if len(gacc) == 1:
             hybrid_accuracies.append(gacc[0])
@@ -153,5 +147,4 @@ def find_optimal_coverage(obj, ds, idf, odf, primitive, name, random_seed=None) 
     if index >= 0:
         optimal_cvg = hybrid_coverages[index]
 
-    logging.info("optimal: {}".format(optimal_cvg))
     return optimal_cvg

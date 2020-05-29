@@ -9,6 +9,7 @@
 ##
 
 import os
+from typing import Any
 
 import libfind_projections
 import numpy as np
@@ -27,7 +28,10 @@ Output = container.DataFrame
 
 class SearchParams(params.Params):
     is_fitted: bool
-
+    fmap: Any
+    fmap_py: Any
+    default_value: Any
+    le: Any
 
 class SearchHyperparams(hyperparams.Hyperparams):
     binsize = hyperparams.UniformInt(lower=1, upper=1000, default=10,
@@ -199,7 +203,11 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
      """
 
     def get_params(self) -> SearchParams:
-        return SearchParams(is_fitted=self._is_fitted)
+        return SearchParams(is_fitted=self._is_fitted,
+                            fmap=self._fmap,
+                            fmap_py=self._fmap_py,
+                            default_value=self._default_value,
+                            le=self._le)
 
     """
      Sets all the search parameters from a Params object
@@ -210,6 +218,10 @@ class Search(SupervisedLearnerPrimitiveBase[Input, Output, SearchParams, SearchH
 
     def set_params(self, *, params: SearchParams) -> base.CallResult[None]:
         self._is_fitted = params['is_fitted']
+        self._fmap = params['fmap']
+        self._fmap_py = params['fmap_py']
+        self._default_value =params['default_value']
+        self._le = params['le']
         return base.CallResult(None)
 
     """

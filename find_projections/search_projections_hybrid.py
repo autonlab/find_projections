@@ -9,6 +9,7 @@
 ##
 
 import os
+from typing import Any
 
 import d3m.metadata
 import libfind_projections
@@ -31,6 +32,12 @@ Output = container.DataFrame
 
 class SearchHybridParams(params.Params):
     is_fitted: bool
+    prim_instance: Any
+    fmap: Any
+    fmap_py: Any
+    default_value: Any
+    le: Any
+    num: Any
 
 
 class SearchHybridHyperparams(hyperparams.Hyperparams):
@@ -238,7 +245,13 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
      """
 
     def get_params(self) -> SearchHybridParams:
-        return SearchHybridParams(is_fitted=self._is_fitted)
+        return SearchHybridParams(is_fitted=self._is_fitted,
+                                  prim_instance=self._prim_instance,
+                                  fmap=self._fmap,
+                                  fmap_py=self._fmap_py,
+                                  default_value=self._default_value,
+                                  le=self._le,
+                                  num=self._num)
 
     """
      Sets all the search parameters from a Params object
@@ -249,6 +262,12 @@ class SearchHybrid(SupervisedLearnerPrimitiveBase[Input, Output, SearchHybridPar
 
     def set_params(self, *, params: SearchHybridParams) -> None:
         self._is_fitted = params['is_fitted']
+        self._prim_instance = params['prim_instance']
+        self._fmap = params['fmap']
+        self._fmap_py = params['fmap_py']
+        self._default_value =params['default_value']
+        self._le = params['le']
+        self._num = params['num']
 
     """
      Returns predictions made on test data from prior saved list of projections.

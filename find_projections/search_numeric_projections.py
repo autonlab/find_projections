@@ -9,6 +9,7 @@
 ##
 
 import os
+from typing import Any
 
 import libfind_projections
 import numpy as np
@@ -26,6 +27,9 @@ Output = container.DataFrame
 
 class SearchNumericParams(params.Params):
     is_fitted: bool
+    fmap: Any
+    fmap_py: Any
+    default_value: Any
 
 
 class SearchNumericHyperparams(hyperparams.Hyperparams):
@@ -194,7 +198,10 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
      """
 
     def get_params(self) -> SearchNumericParams:
-        return SearchNumericParams(is_fitted=self._is_fitted)
+        return SearchNumericParams(is_fitted=self._is_fitted,
+                                   fmap=self._fmap,
+                                   fmap_py=self._fmap_py,
+                                   default_value=self._default_value)
 
     """
      Sets all the search parameters from a Params object
@@ -205,6 +212,9 @@ class SearchNumeric(SupervisedLearnerPrimitiveBase[Input, Output, SearchNumericP
 
     def set_params(self, *, params: SearchNumericParams) -> None:
         self._is_fitted = params['is_fitted']
+        self._fmap = params['fmap']
+        self._fmap_py = params['fmap_py']
+        self._default_value =params['default_value']
 
     """
      Returns predictions made on test data from prior saved list of projections.

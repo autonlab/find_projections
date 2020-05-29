@@ -9,6 +9,7 @@
 ##
 
 import os
+from typing import Any
 
 import d3m.metadata
 import libfind_projections
@@ -30,6 +31,10 @@ Output = container.DataFrame
 
 class SearchHybridNumericParams(params.Params):
     is_fitted: bool
+    prim_instance: Any
+    fmap: Any
+    fmap_py: Any
+    num: Any
 
 
 class SearchHybridNumericHyperparams(hyperparams.Hyperparams):
@@ -233,7 +238,11 @@ class SearchHybridNumeric(
      """
 
     def get_params(self) -> SearchHybridNumericParams:
-        return SearchHybridNumericParams(is_fitted=self._is_fitted)
+        return SearchHybridNumericParams(is_fitted=self._is_fitted,
+                                         prim_instance=self._prim_instance,
+                                         fmap=self._fmap,
+                                         fmap_py=self._fmap_py,
+                                         num=self._num)
 
     """
      Sets all the search parameters from a Params object
@@ -244,6 +253,10 @@ class SearchHybridNumeric(
 
     def set_params(self, *, params: SearchHybridNumericParams) -> None:
         self._is_fitted = params['is_fitted']
+        self._prim_instance = params['prim_instance']
+        self._fmap = params['fmap']
+        self._fmap_py = params['fmap_py']
+        self._num = params['num']
 
     """
      Returns predictions made on test data from prior saved list of projections.

@@ -36,6 +36,7 @@ setup(
     author_email='sray@cs.cmu.edu',
     description='Search for 2-d projection boxes separating out classes/quantiles of output',
     keywords='d3m_primitive',
+    license='MIT',
     ext_modules=[find_projections_module],
     packages=['find_projections'],
     entry_points={

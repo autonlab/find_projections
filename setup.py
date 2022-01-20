@@ -25,7 +25,7 @@ find_projections_module = Extension('libfind_projections',
                                              'find_projections/pyfind_projections.cpp'],
                                     include_dirs=[np.get_include()],
                                     extra_compile_args=['-pthread', '-std=c++14'],
-                                    extra_link_args=['-shared', '-pthread', '-lboost_python-py36']
+                                    extra_link_args=['-shared', '-pthread', '-lboost_python3']
                                     )
 
 setup(
